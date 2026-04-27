@@ -8,7 +8,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Status
 
-**Next.js 项目尚未初始化** — 当前仅有文档和参考文件，无 `package.json`。需要先运行初始化命令。
+**Next.js 项目初始化中** — 核心文档已完善（SPEC.md、DEVELOPMENT.md），实现工作待启动。
+
+**待定事项：**
+- API 聚合供应商待确定（影响 6.7 节成本计算方式）
 
 ## Architecture
 
@@ -57,9 +60,9 @@ npm install && npm run dev   # 启动开发服务器
 | `SPEC.md` | 产品规格文档（40KB）- 60个模板、4档定价、模型接入 |
 | `DEVELOPMENT.md` | 开发文档（35KB）- 21天开发计划、技术架构 |
 
-## Important Notes
+## Context to Load
 
-- 缓存命中阈值 85%，图片拟态加载 30 秒，视频拟态加载 60 秒
-- 积分定价表使用第一期实际模型（GPT/DALL-E/Veo/Imagen），非 Stable Diffusion/Kling/Luma
-- 域名已购买：AiVolo.studio
-- API 聚合供应商推荐：piapi.ai / grsai.com / pic2api.com
+[relevant files]
+- `~/.claude/projects/-Users-wangyong-Documents----AiVolo-studio/memory/*.md` — 用户信息、项目状态、开发反馈
+- `SPEC.md` — 产品规格文档
+- `DEVELOPMENT.md` — 开发文档
