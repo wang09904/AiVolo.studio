@@ -66,32 +66,32 @@
   "hotPaths": [
     {
       "path": "SPEC.md",
-      "accessCount": 21,
-      "lastAccessed": 1777371654450,
+      "accessCount": 26,
+      "lastAccessed": 1777387428362,
       "type": "file"
     },
     {
       "path": "DEVELOPMENT_PLAN.md",
-      "accessCount": 12,
-      "lastAccessed": 1777379560409,
-      "type": "file"
-    },
-    {
-      "path": "CLAUDE.md",
-      "accessCount": 7,
-      "lastAccessed": 1777370998548,
+      "accessCount": 13,
+      "lastAccessed": 1777389276709,
       "type": "file"
     },
     {
       "path": "package.json",
-      "accessCount": 7,
-      "lastAccessed": 1777375708656,
+      "accessCount": 9,
+      "lastAccessed": 1777401213944,
+      "type": "file"
+    },
+    {
+      "path": "CLAUDE.md",
+      "accessCount": 9,
+      "lastAccessed": 1777401387522,
       "type": "file"
     },
     {
       "path": "src/lib/supabase/server.ts",
-      "accessCount": 7,
-      "lastAccessed": 1777376139133,
+      "accessCount": 8,
+      "lastAccessed": 1777394824442,
       "type": "file"
     },
     {
@@ -101,15 +101,45 @@
       "type": "file"
     },
     {
-      "path": "postcss.config.mjs",
-      "accessCount": 3,
-      "lastAccessed": 1777374207838,
+      "path": "src/app/create/page.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1777394841547,
+      "type": "file"
+    },
+    {
+      "path": "src/middleware.ts",
+      "accessCount": 5,
+      "lastAccessed": 1777394824573,
+      "type": "file"
+    },
+    {
+      "path": "src/components/ui/PricingCards.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1777387485087,
       "type": "file"
     },
     {
       "path": "next.config.ts",
+      "accessCount": 4,
+      "lastAccessed": 1777388151957,
+      "type": "file"
+    },
+    {
+      "path": "src/app/page.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1777394841496,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/generate/image/route.ts",
+      "accessCount": 4,
+      "lastAccessed": 1777394983271,
+      "type": "file"
+    },
+    {
+      "path": "postcss.config.mjs",
       "accessCount": 3,
-      "lastAccessed": 1777376653223,
+      "lastAccessed": 1777374207838,
       "type": "file"
     },
     {
@@ -120,14 +150,20 @@
     },
     {
       "path": "tailwind.config.ts",
-      "accessCount": 2,
-      "lastAccessed": 1777373095317,
+      "accessCount": 3,
+      "lastAccessed": 1777387900188,
       "type": "file"
     },
     {
       "path": "src/lib/supabase/client.ts",
-      "accessCount": 2,
-      "lastAccessed": 1777376662614,
+      "accessCount": 3,
+      "lastAccessed": 1777394840467,
+      "type": "file"
+    },
+    {
+      "path": ".env.local",
+      "accessCount": 3,
+      "lastAccessed": 1777394966090,
       "type": "file"
     },
     {
@@ -161,6 +197,24 @@
       "type": "file"
     },
     {
+      "path": "src/app/globals.css",
+      "accessCount": 2,
+      "lastAccessed": 1777387853212,
+      "type": "file"
+    },
+    {
+      "path": "src/app/contact/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1777390060294,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/auth/callback/route.ts",
+      "accessCount": 2,
+      "lastAccessed": 1777394883279,
+      "type": "file"
+    },
+    {
       "path": "src/lib/supabase/README.md",
       "accessCount": 1,
       "lastAccessed": 1777370579681,
@@ -173,27 +227,9 @@
       "type": "file"
     },
     {
-      "path": "src/app/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1777371158077,
-      "type": "file"
-    },
-    {
-      "path": "src/app/globals.css",
-      "accessCount": 1,
-      "lastAccessed": 1777375930277,
-      "type": "file"
-    },
-    {
       "path": "src/app/api/auth/logout/route.ts",
       "accessCount": 1,
       "lastAccessed": 1777376783397,
-      "type": "file"
-    },
-    {
-      "path": "src/middleware.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777376843422,
       "type": "file"
     },
     {
@@ -227,12 +263,6 @@
       "type": "file"
     },
     {
-      "path": "src/app/api/generate/image/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777377910445,
-      "type": "file"
-    },
-    {
       "path": "src/lib/storage/r2.ts",
       "accessCount": 1,
       "lastAccessed": 1777377914333,
@@ -245,12 +275,6 @@
       "type": "file"
     },
     {
-      "path": "src/app/api/auth/callback/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777378010630,
-      "type": "file"
-    },
-    {
       "path": "src/app/refund/page.tsx",
       "accessCount": 1,
       "lastAccessed": 1777378696323,
@@ -260,6 +284,24 @@
       "path": "src/components/layout/Footer.tsx",
       "accessCount": 1,
       "lastAccessed": 1777378787471,
+      "type": "file"
+    },
+    {
+      "path": "src/app/pricing/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1777386541200,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/auth/google/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777394875097,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/auth/server.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777394883222,
       "type": "file"
     }
   ],

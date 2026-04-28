@@ -35,6 +35,56 @@ export default function RefundPage() {
           </section>
 
           <section>
+            <h2 className="text-xl font-semibold mb-3">2.1 积分定价表（退款计算依据）</h2>
+            <p className="mb-3">
+              退款金额计算公式：<strong>退款金额 = 订单金额 - (已生成次数 × 对应单价)</strong>
+            </p>
+            <div className="overflow-x-auto">
+              <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">消耗类型</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">单价</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">说明</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  <tr>
+                    <td className="px-4 py-3 text-sm text-gray-700">文生图（基础模型）</td>
+                    <td className="px-4 py-3 text-sm text-gray-700">$0.020/张</td>
+                    <td className="px-4 py-3 text-sm text-gray-500">Imagen 3</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3 text-sm text-gray-700">文生图（高级模型）</td>
+                    <td className="px-4 py-3 text-sm text-gray-700">$0.050/张</td>
+                    <td className="px-4 py-3 text-sm text-gray-500">GPT Image 2</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3 text-sm text-gray-700">图生图（基础模型）</td>
+                    <td className="px-4 py-3 text-sm text-gray-700">$0.030/张</td>
+                    <td className="px-4 py-3 text-sm text-gray-500">Imagen 3</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3 text-sm text-gray-700">图生图（高级模型）</td>
+                    <td className="px-4 py-3 text-sm text-gray-700">$0.080/张</td>
+                    <td className="px-4 py-3 text-sm text-gray-500">GPT Image 2</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3 text-sm text-gray-700">文生视频（标准）</td>
+                    <td className="px-4 py-3 text-sm text-gray-700">$0.200/秒</td>
+                    <td className="px-4 py-3 text-sm text-gray-500">GPT Video</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3 text-sm text-gray-700">图生视频（标准）</td>
+                    <td className="px-4 py-3 text-sm text-gray-700">$0.300/秒</td>
+                    <td className="px-4 py-3 text-sm text-gray-500">GPT Video</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section>
             <h2 className="text-xl font-semibold mb-3">3. 订阅退款</h2>
             <p>
               月度订阅和年度订阅适用以下退款政策：

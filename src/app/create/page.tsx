@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { AspectRatio, TextToImageResponse } from '@/types/generation';
 import PricingCards from '@/components/ui/PricingCards';
@@ -28,10 +28,28 @@ export default function CreatePage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState<{ imageUrl: string; generationId: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  // 检查登录状态
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
+    };
+    checkAuth();
+  }, []);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
       setError('请输入提示词');
+      return;
+    }
+
+    // 未登录时弹出登录提示
+    if (!isLoggedIn) {
+      setShowLoginModal(true);
       return;
     }
 
@@ -246,6 +264,44 @@ export default function CreatePage() {
           {error && (
             <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
               {error}
+            </div>
+          )}
+
+          {/* 登录提示弹窗 */}
+          {showLoginModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <div
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                onClick={() => setShowLoginModal(false)}
+              />
+              <div className="relative bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+                <h3 className="text-xl font-bold text-white mb-2">登录后即可生成图片</h3>
+                <p className="text-slate-400 text-sm mb-6">
+                  登录账户后即可使用 AI 图片生成功能，新用户首月赠送 20 积分。
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowLoginModal(false)}
+                    className="flex-1 py-3 px-4 border border-slate-600 hover:border-slate-500 text-slate-300 font-medium rounded-xl transition-colors"
+                  >
+                    取消
+                  </button>
+                  <button
+                    onClick={async () => {
+                      const supabase = createClient();
+                      await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                          redirectTo: `${window.location.origin}/create`,
+                        },
+                      });
+                    }}
+                    className="flex-1 py-3 px-4 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-violet-500/25"
+                  >
+                    使用 Google 登录
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>

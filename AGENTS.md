@@ -1,98 +1,99 @@
 <claude-mem-context>
 # Memory Context
 
-# [AiVolo.studio] recent context, 2026-04-28 8:17pm GMT+8
+# [AiVolo.studio] recent context, 2026-04-29 2:22am GMT+8
 
 Legend: 🎯session 🔴bugfix 🟣feature 🔄refactor ✅change 🔵discovery ⚖️decision 🚨security_alert 🔐security_note
 Format: ID TIME TYPE TITLE
 Fetch details: get_observations([IDs]) | Search: mem-search skill
 
-Stats: 50 obs (6,079t read) | 2,655,562t work | 100% savings
+Stats: 50 obs (6,330t read) | 1,632,513t work | 100% savings
 
 ### Apr 28, 2026
-S1070 存储时长分层方案确定 - Free 7天/Lite 30天/Pro 1年 (Apr 28 at 4:56 PM)
-S1071 **Deep Interview 工作流启动 - AiVolo.studio SPEC 升级** (Apr 28 at 5:01 PM)
-S1086 Deep Interview 模式对 AiVolo.studio SPEC 文档系统性 Review 与项目初始化并行推进 (Apr 28 at 5:56 PM)
-S1089 **邮箱登录功能移除** (Apr 28 at 6:14 PM)
-S1097 观察 Primary Session 完成 SPEC.md v2.1 更新，Deep Interview 22轮访谈收尾，准备进入 Planner 任务编排阶段 (Apr 28 at 6:16 PM)
-S1107 **Next.js 构建成功** (Apr 28 at 6:22 PM)
-1175 7:33p 🔴 Supabase server.ts TypeScript 类型标注修复
-1176 7:34p 🔴 next-intl 依赖版本不匹配Bug
-1177 " 🔴 Next.js 构建 TypeScript 类型错误
-1178 " 🔴 Supabase server.ts TypeScript 类型修复
-1179 7:35p 🔴 **npmmirror 镜像源导致 next-intl 依赖安装失败**
-1180 " 🔴 **Supabase server.ts TypeScript 类型错误修复**
-1182 7:36p 🔴 **Supabase server.ts TypeScript 类型错误已修复**
-1183 7:39p 🔴 **Next.js 构建成功**
-S1108 AiVolo.studio 项目依赖安装与构建修复 (Apr 28 at 7:39 PM)
-S1126 **Claude Code + CodeX 联动架构设想** (Apr 28 at 7:39 PM)
-1186 7:41p 🔴 **AiVolo.studio npm install 与构建修复完成**
-1187 " 🔵 **AiVolo.studio GitHub 仓库已确认存在**
-1188 " 🔵 **AiVolo.studio 项目状态：Next.js 文件待提交**
-1189 7:42p ✅ **AiVolo.studio 项目文件已暂存准备首次代码提交**
-1190 " ✅ **AiVolo.studio 项目文件已暂存准备首次代码提交**
-1191 " ✅ **AiVolo.studio Next.js 项目基础结构已提交并推送**
-1192 " 🔵 **AiVolo.studio GitHub 仓库已确认并提供 Vercel 部署指南**
-1193 7:43p 🔵 **Vercel 部署环境准备**
-1194 " 🔵 **AiVolo.studio 项目依赖和结构确认**
-1195 7:44p ✅ **AiVolo.studio 页面骨架目录结构创建**
-1196 " 🔵 **AiVolo.studio 模型详情页动态路由和配置确认**
-1197 7:45p 🟣 **Google OAuth 认证目录结构创建**
-1199 7:46p 🟣 **Google OAuth 认证流程实现**
-1201 " 🟣 **OAuth 回调和登出 API 实现**
-1202 7:47p 🟣 **useUser hook 实现**
-1203 " 🟣 **认证中间件和环境变量模板创建**
-1204 7:49p 🔴 **useUser.ts TypeScript 类型错误修复**
-1206 7:52p 🟣 **AiVolo.studio 页面骨架创建**
-1207 " 🟣 **AiVolo.studio 页面骨架和布局组件完成**
-1208 7:53p 🔵 Claude Code 与 CodeX 联动集成构想
-1209 7:55p 🟣 **Claude Code + CodeX 联动架构设想**
-S1141 Claude Code 与 CodeX 联动集成 - 通过 omc team 调用 Codex Worker (Apr 28 at 7:55 PM)
-1210 7:58p ⚖️ **AiVolo.studio 基础设施就绪 - 下一步自主推进**
-1211 8:00p ⚖️ **自主推进模式启动 - Agent Team 协作部署就绪**
-1212 8:02p ⚖️ **用户持续请求自主推进 AiVolo.studio 项目开发**
-1213 8:03p 🔵 **AiVolo.studio 开发计划完整记录**
-1214 " 🟣 **积分系统数据库函数创建**
-1215 8:04p ⚖️ **用户第四次请求自主推进 AiVolo.studio 项目**
-1216 8:05p 🟣 **积分系统 API 路由实现**
-1217 " 🟣 **积分系统前端组件实现**
-1218 " 🟣 **文生图 API 与 Cloudflare R2 存储集成**
-1219 8:06p 🟣 **下载签名 API 和 Header 组件集成积分显示**
-1220 8:07p ✅ **账户页面集成流水组件和环境配置更新**
-1221 " 🟣 **Claude Code 与 CodeX 联动集成需求**
-1223 8:09p ⚖️ **用户第5次请求自主推进 AiVolo.studio 项目**
-1224 8:10p ✅ tmux 被拦截，重新启动 tmux 模式
-1225 8:11p 🔵 omc team 启动成功但 tmux pane 存在超时警告
-1226 8:12p ⚖️ **用户第6次请求自主推进 AiVolo.studio 项目**
-**1227** " 🔵 **omc team Codex worker 未在 tmux pane 中运行**
-omc team 编排系统启动了 Codex 安全评审 worker，对 src/lib/auth.ts 进行 OWASP Top 10 漏洞检查。任务已创建但 worker 未能正常在 tmux 中保持连接。团队状态仍显示 planning phase，任务 status=pending，但 worker 已不存在于任何 tmux pane 中。这表明 omc 团队编排在 spawn Codex worker 环节存在断连问题，需要调查 worker 启动失败的原因或调整 OMC_SHELL_READY_TIMEOUT_MS 参数。
-~141t 🔍 37,751
+1231 8:14p ✅ **开发计划进度更新 - MVP Phase 1 里程碑**
+1232 8:18p 🚨 Codex 安全评审发现 7 个严重漏洞，AiVolo.studio 禁止部署
+1234 8:23p 🟣 **Claude Code 与 CodeX 联动集成方案探索**
+1235 " 🟣 **Claude Code + CodeX 集成脚本创建**
+1236 " 🟣 **AiVolo.studio MVP Phase 1 持续推进 - 用户第六次请求自主决策推进**
+1237 " 🔵 **AiVolo.studio 项目结构现状分析**
+1238 " 🟣 **AiVolo.studio 生成页面完整实现**
+1239 " 🟣 **AutoPilot 技能激活执行**
+1242 8:26p 🔴 **next-intl 依赖版本不匹配Bug - npm registry 问题**
+1244 " ✅ Footer 组件升级为深色玻璃拟态风格
+1245 " ✅ CreditBalance 组件样式升级
+1248 8:28p 🔴 **Codex CLI 缺少平台二进制依赖**
+1252 8:31p 🟣 **首页和定价页 UI 实现完成**
+1255 8:38p ✅ Codex CLI reinstallation completed successfully
+1256 " 🔴 Codex CLI reinstall task completed but platform binary still missing
+1266 9:01p 🔴 **Supabase SQL 保留关键字冲突 Bug - status 列名语法错误**
+1267 9:03p 🔴 **PostgreSQL TIMESTAMPT 类型错误 - 应使用 TIMESTAMPTZ**
+1268 9:04p 🔴 **next-intl 版本依赖错误持续问题**
+1270 9:06p 🔴 **next-intl 版本不匹配Bug - npm install 失败**
+1278 9:47p 🟣 **部署前置条件文档模板化 - 密钥占位符模式**
+1279 " ✅ **AiVolo.studio 环境变量模板创建完成**
+1287 10:18p 🔴 **AiVolo.studio localhost:3000 无法访问问题**
+1290 10:28p 🔵 **AiVolo.studio 定价页实现与需求文档严重不符 - 多处违规**
+1291 " ✅ **AiVolo.studio 定价页需要回归文档进行修正**
+1293 10:30p 🔵 **SPEC.md 明确定义 4 档定价产品 - Lite/Pro 月付/年付，无 Enterprise**
+1294 " ✅ **AiVolo.studio 定价页需按 SPEC 2.5 节严格修正**
+S1223 AiVolo.studio 定价页会员权益完整实现修正 (Apr 28 at 10:38 PM)
+1297 10:44p 🔵 SPEC 文档 7.3 会员权益未完整实现
+1298 " 🔵 SPEC 7.3 会员权益表格完整内容确认
+1299 10:45p 🔴 PricingCards.tsx 会员权益完整实现修正
+S1225 **AiVolo.studio 网页 CSS 渲染失效 - 排查根因并修复** (Apr 28 at 10:48 PM)
+1306 10:50p 🔴 **网页 CSS 渲染失效 - 样式完全丢失**
+1307 10:51p 🔴 **AiVolo.studio 网页 CSS 渲染失效**
+S1227 **Next.js 多个 lockfile 导致工作区根目录警告** (Apr 28 at 10:52 PM)
+1310 10:54p 🔵 **Next.js 多个 lockfile 导致工作区根目录警告**
+S1228 Next.js 多 lockfile 工作区根目录警告解释与处理决策 (Apr 28 at 10:54 PM)
+S1229 **AiVolo.studio CSS 样式丢失问题继续修复中** (Apr 28 at 10:55 PM)
+1311 10:56p 🔴 **AiVolo.studio CSS 样式丢失问题继续修复中**
+S1230 修复 AiVolo.studio 项目 localhost:3000 CSS 样式加载异常问题 (Apr 28 at 10:56 PM)
+S1234 测试 AiVolo.studio Google OAuth 登录配置 (Apr 28 at 10:56 PM)
+1314 11:06p 🟣 **AiVolo.studio OAuth 登录配置完成，等待测试验证**
+S1237 **AiVolo.studio MVP Phase 1 任务完成情况详细审查** (Apr 28 at 11:07 PM)
+1316 11:14p ✅ **AiVolo.studio MVP Phase 1 完成情况总览**
+1317 11:15p ✅ **AiVolo.studio MVP Phase 1 任务完成情况详细审查**
+S1239 回顾第一阶段所有任务的完成情况 (Apr 28 at 11:15 PM)
+1329 11:26p 🔄 **游客访问权限重构 - 登录触发时机调整**
+1330 " ⚖️ **联系信息配置决策 - 暂不添加社交媒体**
+1331 " 🔵 **退款政策文案优化 - 考虑嵌入 SPEC 定价表**
+1332 " ✅ **DNS 解析配置完成待验证**
+1333 " 🔵 **DNS 解析测试无响应**
+1334 " 🔵 **SPEC 6.7.3 退款定价表详情已确认**
+1335 " 🔵 **联系页面当前实现需重构**
+1336 11:27p 🔵 **退款政策页面内容待完善**
+### Apr 29, 2026
+1418 12:47a 🔴 **登录拦截逻辑过严 - 生成按钮点击时才应要求登录**
+**1420** " 🔵 ****AiVolo.studio 认证架构确认：中间件仅保护 /account****
+在 AiVolo.studio 项目中调研认证流程时发现，代码层面的认证架构设计正确：中间件仅保护 /account 路径，/create 页面允许未登录用户访问，仅在点击"生成"按钮时才触发登录弹窗。但用户报告无法在不登录的情况下访问 /create 页面，这可能与客户端 Supabase session 检查有关。潜在原因包括：浏览器缓存了旧的认证状态、Supabase session cookie 处理异常、或服务端和客户端 session 状态不一致。需要进一步检查 session cookie 的设置和传递逻辑。
+~174t 🔍 35,811
 
-**1228** " 🟣 ****Agent Team 并行完成三个核心功能模块****
-三个 executor agent 并行完成核心功能模块开发。第一个 agent 实现文生图功能：API 路由 `/api/generate/image`、类型定义 `generation.ts`、前端 `create/page.tsx`。第二个 agent 配置 Cloudflare R2 存储：`lib/storage/r2.ts` 客户端、`/api/upload`、`/api/download/[key]` 签名链接 API。第三个 agent 实现积分系统：数据库函数迁移 `002_credits_functions.sql`、积分 API、前端组件并在 Header 和账户页集成。所有代码 TypeScript 编译通过，Next.js build 成功生成完整路由表。
-~182t 🛠️ 157,919
+**1421** 12:48a 🔵 ****API 路由结构确认：认证和生成接口分离****
+调研 AiVolo.studio 项目的 API 路由结构发现认证系统和生成系统是分离的。Google OAuth 认证使用独立的 lib/auth/server.ts 服务端客户端，通过 /api/auth/google 引导用户到 Google 授权页面，授权后回调到 /api/auth/callback。生成功能通过 /api/generate/image 路由处理。关键配置包括 redirectTo 指向回调页面、prompt: 'select_account' 强制每次显示账号选择以避免缓存问题。用户报告的 "No API key found in request" 错误可能与 Google OAuth 配置或 Supabase 项目设置中的 API Key 相关。
+~204t 🔍 42,454
 
-**1229** 8:14p ⚖️ ****用户第7次请求自主推进 AiVolo.studio 项目****
-用户第7次重申推进 AiVolo.studio 项目开发。强调域名购买、Cloudflare R2 注册、GitHub CLI 配置均已完成。强调按任务依赖关系铺排进程，可并行任务调用 Agent Team 处理。推荐 AutoPilot 或 ralplan 模式实现自主推进。
-~90t ⚖️ 163,378
+**1422** " 🔴 ****NEXT_PUBLIC_SITE_URL 缺失导致 Google OAuth 无法工作****
+调试 Google OAuth 登录失败时发现关键问题：.env.local 文件中缺少 NEXT_PUBLIC_SITE_URL 环境变量。该变量在 /api/auth/google/route.ts 中用于配置 OAuth redirectTo 回调地址。由于未配置，生产环境中 OAuth 回调地址指向 undefined，导致 Google 登录流程中断。需要添加 NEXT_PUBLIC_SITE_URL 到 .env.local，值为实际的生产站点 URL（如 https://aivolo.studio 或开发用的 localhost 地址）。
+~180t 🛠️ 43,635
 
-**1230** " 🔴 **Codex worker 启动失败根因：cm-fs-preload 临时文件缺失**
-omc team 的 Codex worker 启动失败的根因已定位：Node.js preload 机制尝试加载 Claude Code 的 cm-fs-preload 脚本时，目标临时文件（位于 /var/folders 目录）不存在或已被系统清理。这导致 worker 进程在初始化阶段崩溃，team 状态显示 worker_pane_not_ready。事件日志确认了启动时需要手动干预的问题。
-~187t 🛠️ 54,533
+**1424** 12:49a 🔴 ****添加 NEXT_PUBLIC_SITE_URL 并修正 SUPABASE_URL 格式****
+修复了 .env.local 中的两个配置问题。首先添加了缺失的 NEXT_PUBLIC_SITE_URL 环境变量，这是 Google OAuth 回调地址的必需配置。其次修正了 NEXT_PUBLIC_SUPABASE_URL 的格式，移除了多余的 /rest/v1/ 后缀。Supabase URL 应该直接指向项目根 endpoint，而非 REST API 路径。这两个修复应该能解决 Google OAuth 登录失败的问题。用户需要重启开发服务器以使环境变量生效。
+~155t 🛠️ 45,646
 
-**1231** " ✅ ****开发计划进度更新 - MVP Phase 1 里程碑****
-更新 DEVELOPMENT_PLAN.md 任务清单，反映 Agent Team 并行开发的成果。Cloudflare R2 配置、文生图功能、积分系统三大模块已完成并标记为完成状态。生成页和账户页正在进行中。域名任务状态从"待开始"改为"待配置"，因为用户已购买但尚未配置到 Vercel。
-~93t 🛠️ 174,793
+**1425** 12:50a 🔄 ****图片生成 API 重构：从回调模式改为直接生成模式****
+重构了 AiVolo.studio 的图片生成 API 路由，改变了生成流程的架构设计。原来采用"先创建记录再生成图片"的回调模式，现在改为"先生成图片再创建记录"的直接模式。这种重构消除了单独的图片生成辅助函数，将逻辑直接集成到 POST 处理器中，简化了代码结构。同时修正了 API URL 配置（不再拼接路径）和宽高比尺寸参数。新的 RPC 调用现在直接接收图片 URL 和成本参数，而非事后更新记录。
+~179t 🛠️ 56,245
 
-S1147 推进 AiVolo.studio MVP Phase 1 开发 - Agent Team 并行实现核心功能模块 (Apr 28 at 8:15 PM)
-**Investigated**: 探索了项目结构，确认已完成：Next.js初始化、Tailwind配置、Supabase配置、数据库设计、Google OAuth、页面骨架。审查了 DEVELOPMENT_PLAN.md 任务清单，了解17个任务的依赖关系和优先级。
+S1338 修复 AiVolo.studio 的两个认证问题：1) 未登录用户无法访问生成页；2) Google OAuth 登录报错 "No API key found" (Apr 29 at 12:51 AM)
+**Investigated**: 调研了认证架构：检查了 middleware.ts（仅保护 /account）、create/page.tsx（登录弹窗逻辑）、.env.local 配置（缺失 NEXT_PUBLIC_SITE_URL）、Supabase URL 格式（错误地包含 /rest/v1/）
 
-**Learned**: Cloudflare R2 与 S3 API 兼容，可使用 @aws-sdk/client-s3 库。积分系统需要 Supabase RPC 函数实现原子操作防止超扣。Next.js App Router 中认证需使用 @supabase/ssr 的 createServerClient 带 Cookie 支持。
+**Learned**: 认证中间件设计正确，/create 页允许未登录访问；Google OAuth 登录依赖 NEXT_PUBLIC_SITE_URL 配置；Supabase URL 应直接指向项目 endpoint 而非 REST API 路径
 
-**Completed**: Agent Team 并行完成三大核心模块：1) 文生图功能（/api/generate/image API、类型定义、前端页面）2) Cloudflare R2 存储（lib/storage/r2.ts、签名上传/下载 API）3) 积分系统（数据库函数、API路由、前端组件）。Next.js build 成功，20个路由全部通过，Middleware 34.3 kB。
+**Completed**: 修复 .env.local：添加 NEXT_PUBLIC_SITE_URL=http://localhost:3000，修正 NEXT_PUBLIC_SUPABASE_URL 移除 /rest/v1/ 后缀；重构 src/app/api/generate/image/route.ts 简化代码流程；启动开发服务器在 http://localhost:3001
 
-**Next Steps**: 当前状态：已完成 11/17 任务（65%）。下一步：1) 需要用户操作：配置域名 DNS、执行 SQL 迁移、配置环境变量；2) UI 设计确认后开始首页、定价页、三件套页面开发；3) 最后完成部署上线。
+**Next Steps**: 用户测试 Google OAuth 登录流程和 /create 页面访问，确认两个问题已解决
 
 
-Access 2656k tokens of past work via get_observations([IDs]) or mem-search skill.
+Access 1633k tokens of past work via get_observations([IDs]) or mem-search skill.
 </claude-mem-context>

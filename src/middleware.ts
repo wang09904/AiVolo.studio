@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 /**
  * 需要登录才能访问的路径
  */
-const protectedPaths = ['/create', '/account']
+const protectedPaths = ['/account']
 
 /**
  * 认证中间件
