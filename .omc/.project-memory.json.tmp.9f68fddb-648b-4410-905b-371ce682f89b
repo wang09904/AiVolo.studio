@@ -1,0 +1,64 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1777311229942,
+  "projectRoot": "/Users/wangyong/Documents/项目/AiVolo.studio",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "src"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 1,
+      "lastAccessed": 1777311229877,
+      "keyFiles": []
+    },
+    "竞品-Pollo": {
+      "path": "竞品-Pollo",
+      "purpose": null,
+      "fileCount": 6,
+      "lastAccessed": 1777311229878,
+      "keyFiles": [
+        "ScreenShot_2026-04-27_095847_845.png",
+        "打卡赚额度.png",
+        "用户调研1.png",
+        "用户调研2.png",
+        "用户调研3.png"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "CLAUDE.md",
+      "accessCount": 3,
+      "lastAccessed": 1777311530546,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

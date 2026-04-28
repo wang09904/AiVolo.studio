@@ -1,0 +1,142 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1777311229942,
+  "projectRoot": "/Users/wangyong/Documents/项目/AiVolo.studio",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "src"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 1,
+      "lastAccessed": 1777311229877,
+      "keyFiles": []
+    },
+    "竞品-Pollo": {
+      "path": "竞品-Pollo",
+      "purpose": null,
+      "fileCount": 6,
+      "lastAccessed": 1777311229878,
+      "keyFiles": [
+        "ScreenShot_2026-04-27_095847_845.png",
+        "打卡赚额度.png",
+        "用户调研1.png",
+        "用户调研2.png",
+        "用户调研3.png"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "CLAUDE.md",
+      "accessCount": 7,
+      "lastAccessed": 1777370998548,
+      "type": "file"
+    },
+    {
+      "path": "SPEC.md",
+      "accessCount": 6,
+      "lastAccessed": 1777371348892,
+      "type": "file"
+    },
+    {
+      "path": "DEVELOPMENT_PLAN.md",
+      "accessCount": 5,
+      "lastAccessed": 1777370731390,
+      "type": "file"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1777371174198,
+      "type": "file"
+    },
+    {
+      "path": "next.config.ts",
+      "accessCount": 2,
+      "lastAccessed": 1777371127631,
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 2,
+      "lastAccessed": 1777371194249,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/supabase/migrations/001_initial_schema.sql",
+      "accessCount": 1,
+      "lastAccessed": 1777370567812,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/supabase/client.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777370571290,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/supabase/server.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777370575167,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/supabase/README.md",
+      "accessCount": 1,
+      "lastAccessed": 1777370579681,
+      "type": "file"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "accessCount": 1,
+      "lastAccessed": 1777371100972,
+      "type": "file"
+    },
+    {
+      "path": "tsconfig.json",
+      "accessCount": 1,
+      "lastAccessed": 1777371106386,
+      "type": "file"
+    },
+    {
+      "path": "next-env.d.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777371115530,
+      "type": "file"
+    },
+    {
+      "path": "src/app/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1777371158077,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

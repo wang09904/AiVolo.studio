@@ -1,0 +1,267 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1777311229942,
+  "projectRoot": "/Users/wangyong/Documents/项目/AiVolo.studio",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "npm run build 2>&1 | tail -25",
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "src"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [
+    {
+      "id": "team-workflow-rule-violation-2026-04-28",
+      "type": "feedback",
+      "title": "Agent Teams 工作流规则违反",
+      "description": "重复委派同一任务给不同 Worker，导致冲突",
+      "what_happened": "Worker-1 被委派 shadcn 初始化任务后，因等不及20分钟就又启动 Worker-3 做同样任务，造成冲突和重复工作",
+      "why_wrong": "1. 绕过了 Team 工具的正确流程（TeamCreate → TaskCreate → TaskUpdate → Spawn）\n2. 没有设置明确的 owner，导致任务可能被重复认领\n3. 不该因为'等不及'就重复委派",
+      "correct_behavior": "1. 必须先用 TeamCreate 创建团队\n2. TaskCreate 创建任务并设置 owner\n3. 同一任务只分配给一个 Worker\n4. 如果 Worker 在运行，等待完成通知\n5. Worker 失败后分析原因，再决定是否重试",
+      "prevention_rule": "每次 spawn agent 前必须做自我检查：\n- 是否已经 TeamCreate？\n- 是否已经 TaskCreate 并设置 owner？\n- 是否有 blockedBy 依赖未解决？\n- 是否在等待已有 Worker 完成？\n- 是否重复委派了同一任务？"
+    }
+  ],
+  "directoryMap": {
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 1,
+      "lastAccessed": 1777311229877,
+      "keyFiles": []
+    },
+    "竞品-Pollo": {
+      "path": "竞品-Pollo",
+      "purpose": null,
+      "fileCount": 6,
+      "lastAccessed": 1777311229878,
+      "keyFiles": [
+        "ScreenShot_2026-04-27_095847_845.png",
+        "打卡赚额度.png",
+        "用户调研1.png",
+        "用户调研2.png",
+        "用户调研3.png"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "SPEC.md",
+      "accessCount": 21,
+      "lastAccessed": 1777371654450,
+      "type": "file"
+    },
+    {
+      "path": "DEVELOPMENT_PLAN.md",
+      "accessCount": 12,
+      "lastAccessed": 1777379560409,
+      "type": "file"
+    },
+    {
+      "path": "CLAUDE.md",
+      "accessCount": 7,
+      "lastAccessed": 1777370998548,
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 7,
+      "lastAccessed": 1777375708656,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/supabase/server.ts",
+      "accessCount": 7,
+      "lastAccessed": 1777376139133,
+      "type": "file"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1777377684770,
+      "type": "file"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "accessCount": 3,
+      "lastAccessed": 1777374207838,
+      "type": "file"
+    },
+    {
+      "path": "next.config.ts",
+      "accessCount": 3,
+      "lastAccessed": 1777376653223,
+      "type": "file"
+    },
+    {
+      "path": "src/components/layout/Header.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1777377947077,
+      "type": "file"
+    },
+    {
+      "path": "tailwind.config.ts",
+      "accessCount": 2,
+      "lastAccessed": 1777373095317,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/supabase/client.ts",
+      "accessCount": 2,
+      "lastAccessed": 1777376662614,
+      "type": "file"
+    },
+    {
+      "path": "src/hooks/useUser.ts",
+      "accessCount": 2,
+      "lastAccessed": 1777376886663,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/supabase/migrations/001_initial_schema.sql",
+      "accessCount": 2,
+      "lastAccessed": 1777377662375,
+      "type": "file"
+    },
+    {
+      "path": ".env.example",
+      "accessCount": 2,
+      "lastAccessed": 1777377936765,
+      "type": "file"
+    },
+    {
+      "path": "tsconfig.json",
+      "accessCount": 2,
+      "lastAccessed": 1777377999617,
+      "type": "file"
+    },
+    {
+      "path": "src/types/generation.ts",
+      "accessCount": 2,
+      "lastAccessed": 1777378246393,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/supabase/README.md",
+      "accessCount": 1,
+      "lastAccessed": 1777370579681,
+      "type": "file"
+    },
+    {
+      "path": "next-env.d.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777371115530,
+      "type": "file"
+    },
+    {
+      "path": "src/app/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1777371158077,
+      "type": "file"
+    },
+    {
+      "path": "src/app/globals.css",
+      "accessCount": 1,
+      "lastAccessed": 1777375930277,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/auth/logout/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777376783397,
+      "type": "file"
+    },
+    {
+      "path": "src/middleware.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777376843422,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/supabase/migrations/002_credits_functions.sql",
+      "accessCount": 1,
+      "lastAccessed": 1777377808749,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/credits/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777377855267,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/credits/transactions/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777377870619,
+      "type": "file"
+    },
+    {
+      "path": "src/components/credits/CreditBalance.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1777377886008,
+      "type": "file"
+    },
+    {
+      "path": "src/components/credits/CreditHistory.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1777377900149,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/generate/image/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777377910445,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/storage/r2.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777377914333,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/upload/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777377919657,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/auth/callback/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777378010630,
+      "type": "file"
+    },
+    {
+      "path": "src/app/refund/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1777378696323,
+      "type": "file"
+    },
+    {
+      "path": "src/components/layout/Footer.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1777378787471,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
