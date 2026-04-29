@@ -5,13 +5,12 @@ export const metadata: Metadata = {
   description: 'AiVolo.studio refund policy',
 };
 
-const creditPricing = [
-  ['Text to image, basic model', '$0.020 / image', 'Imagen 3'],
-  ['Text to image, advanced model', '$0.050 / image', 'GPT Image 2'],
-  ['Image to image, basic model', '$0.030 / image', 'Imagen 3'],
-  ['Image to image, advanced model', '$0.080 / image', 'GPT Image 2'],
-  ['Text to video', '$0.200 / second', 'GPT Video'],
-  ['Image to video', '$0.300 / second', 'GPT Video'],
+const planCreditValues = [
+  ['Free', '$0', '20', '$0.000000'],
+  ['Lite Monthly', '$15', '300', '$0.050000'],
+  ['Lite Yearly', '$10 monthly equivalent', '300 / month', '$0.033333'],
+  ['Pro Monthly', '$29', '800', '$0.036250'],
+  ['Pro Yearly', '$14.5 monthly equivalent', '800 / month', '$0.018125'],
 ];
 
 export default function RefundPage() {
@@ -20,7 +19,7 @@ export default function RefundPage() {
       <article className="mx-auto max-w-4xl space-y-8">
         <header>
           <h1 className="text-4xl font-semibold tracking-normal">Refund Policy</h1>
-          <p className="mt-3 text-sm text-[oklch(66%_0.016_270)]">Last updated: April 28, 2026</p>
+          <p className="mt-3 text-sm text-[oklch(66%_0.016_270)]">Last updated: April 30, 2026</p>
         </header>
 
         <section className="space-y-3">
@@ -31,43 +30,48 @@ export default function RefundPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold">2. Credit Refunds</h2>
+          <h2 className="text-xl font-semibold">2. Credit-Based Refund Logic</h2>
           <p className="leading-7 text-[oklch(74%_0.018_270)]">
-            Purchased credits may be refundable within 7 days if no more than 20% of the purchased credits have been used. Used credits are not refundable.
+            Refunds are calculated from the paid credit value attached to your subscription. Credits used for image or video generation reduce the refundable amount. Free signup credits, promotional credits, and compensation credits have no cash refund value.
           </p>
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold">3. Usage Pricing for Refund Calculations</h2>
+          <h2 className="text-xl font-semibold">3. Credit Value for Refund Calculations</h2>
           <p className="leading-7 text-[oklch(74%_0.018_270)]">
-            Refund amount = order amount minus used generation value.
+            Used value = consumed paid credits multiplied by the unit credit value of the plan and billing period that issued those credits. Refund amount = amount paid minus used value.
           </p>
           <div className="overflow-x-auto rounded-lg border border-[oklch(31%_0.02_270)]">
             <table className="min-w-full text-left text-sm">
               <thead className="bg-[oklch(18%_0.014_270)] text-[oklch(88%_0.012_270)]">
                 <tr>
-                  <th className="px-4 py-3">Usage type</th>
-                  <th className="px-4 py-3">Unit price</th>
-                  <th className="px-4 py-3">Model note</th>
+                  <th className="px-4 py-3">Plan</th>
+                  <th className="px-4 py-3">Effective monthly price</th>
+                  <th className="px-4 py-3">Monthly credits</th>
+                  <th className="px-4 py-3">Unit credit value</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[oklch(29%_0.018_270)] text-[oklch(74%_0.018_270)]">
-                {creditPricing.map(([type, price, note]) => (
-                  <tr key={type}>
-                    <td className="px-4 py-3">{type}</td>
+                {planCreditValues.map(([plan, price, credits, value]) => (
+                  <tr key={plan}>
+                    <td className="px-4 py-3">{plan}</td>
                     <td className="px-4 py-3">{price}</td>
-                    <td className="px-4 py-3">{note}</td>
+                    <td className="px-4 py-3">{credits}</td>
+                    <td className="px-4 py-3">{value}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          <p className="leading-7 text-[oklch(74%_0.018_270)]">
+            Example: Pro Yearly has an effective monthly price of $14.5 and 800 monthly credits. If 200 paid credits from that billing period are used, the used value is 200 x $0.018125 = $3.625.
+          </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">4. Subscription Refunds</h2>
           <p className="leading-7 text-[oklch(74%_0.018_270)]">
-            First-time subscribers may request a refund within 7 days. If a service outage prevents normal use for more than 24 continuous hours, we may provide a proportional refund.
+            First-time subscribers may request a refund within 7 days. We review the order, the billing period, and the paid credits already consumed. Any unused paid value may be refunded through the original payment method where supported by our payment provider.
           </p>
         </section>
 

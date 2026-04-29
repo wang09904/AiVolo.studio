@@ -1,33 +1,75 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1777311229942,
+  "lastScanned": 1777474851973,
   "projectRoot": "/Users/wangyong/Documents/项目/AiVolo.studio",
   "techStack": {
-    "languages": [],
-    "frameworks": [],
-    "packageManager": null,
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "next",
+        "version": "15.0.0",
+        "category": "fullstack"
+      },
+      {
+        "name": "react",
+        "version": "19.0.0",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.0.0",
+        "category": "frontend"
+      }
+    ],
+    "packageManager": "npm",
     "runtime": null
   },
   "build": {
-    "buildCommand": "npm run build 2>&1 | tail -25",
+    "buildCommand": "npm run build",
     "testCommand": null,
-    "lintCommand": null,
-    "devCommand": null,
-    "scripts": {}
+    "lintCommand": "npm run lint",
+    "devCommand": "npm run dev",
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start",
+      "lint": "next lint"
+    }
   },
   "conventions": {
     "namingStyle": null,
     "importStyle": null,
     "testPattern": null,
-    "fileOrganization": null
+    "fileOrganization": "type-based"
   },
   "structure": {
     "isMonorepo": false,
     "workspaces": [],
     "mainDirectories": [
+      "scripts",
       "src"
     ],
-    "gitBranches": null
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
   },
   "customNotes": [
     {
@@ -42,18 +84,29 @@
     }
   ],
   "directoryMap": {
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 1,
+      "lastAccessed": 1777474851947,
+      "keyFiles": [
+        "codex-review.sh"
+      ]
+    },
     "src": {
       "path": "src",
       "purpose": "Source code",
-      "fileCount": 1,
-      "lastAccessed": 1777311229877,
-      "keyFiles": []
+      "fileCount": 2,
+      "lastAccessed": 1777474851948,
+      "keyFiles": [
+        "middleware.ts"
+      ]
     },
     "竞品-Pollo": {
       "path": "竞品-Pollo",
       "purpose": null,
       "fileCount": 6,
-      "lastAccessed": 1777311229878,
+      "lastAccessed": 1777474851952,
       "keyFiles": [
         "ScreenShot_2026-04-27_095847_845.png",
         "打卡赚额度.png",
@@ -61,249 +114,44 @@
         "用户调研2.png",
         "用户调研3.png"
       ]
+    },
+    "src/app": {
+      "path": "src/app",
+      "purpose": "Application code",
+      "fileCount": 3,
+      "lastAccessed": 1777474851953,
+      "keyFiles": [
+        "globals.css",
+        "layout.tsx",
+        "page.tsx"
+      ]
+    },
+    "src/components": {
+      "path": "src/components",
+      "purpose": "UI components",
+      "fileCount": 0,
+      "lastAccessed": 1777474851953,
+      "keyFiles": []
+    },
+    "src/lib": {
+      "path": "src/lib",
+      "purpose": "Library code",
+      "fileCount": 2,
+      "lastAccessed": 1777474851954,
+      "keyFiles": [
+        "product.ts"
+      ]
+    },
+    "src/types": {
+      "path": "src/types",
+      "purpose": "Type definitions",
+      "fileCount": 1,
+      "lastAccessed": 1777474851954,
+      "keyFiles": [
+        "generation.ts"
+      ]
     }
   },
-  "hotPaths": [
-    {
-      "path": "SPEC.md",
-      "accessCount": 26,
-      "lastAccessed": 1777387428362,
-      "type": "file"
-    },
-    {
-      "path": "DEVELOPMENT_PLAN.md",
-      "accessCount": 13,
-      "lastAccessed": 1777389276709,
-      "type": "file"
-    },
-    {
-      "path": "package.json",
-      "accessCount": 9,
-      "lastAccessed": 1777401213944,
-      "type": "file"
-    },
-    {
-      "path": "CLAUDE.md",
-      "accessCount": 9,
-      "lastAccessed": 1777401387522,
-      "type": "file"
-    },
-    {
-      "path": "src/lib/supabase/server.ts",
-      "accessCount": 8,
-      "lastAccessed": 1777394824442,
-      "type": "file"
-    },
-    {
-      "path": "src/app/layout.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1777377684770,
-      "type": "file"
-    },
-    {
-      "path": "src/app/create/page.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1777394841547,
-      "type": "file"
-    },
-    {
-      "path": "src/middleware.ts",
-      "accessCount": 5,
-      "lastAccessed": 1777394824573,
-      "type": "file"
-    },
-    {
-      "path": "src/components/ui/PricingCards.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1777387485087,
-      "type": "file"
-    },
-    {
-      "path": "next.config.ts",
-      "accessCount": 4,
-      "lastAccessed": 1777388151957,
-      "type": "file"
-    },
-    {
-      "path": "src/app/page.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1777394841496,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/generate/image/route.ts",
-      "accessCount": 4,
-      "lastAccessed": 1777394983271,
-      "type": "file"
-    },
-    {
-      "path": "postcss.config.mjs",
-      "accessCount": 3,
-      "lastAccessed": 1777374207838,
-      "type": "file"
-    },
-    {
-      "path": "src/components/layout/Header.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1777377947077,
-      "type": "file"
-    },
-    {
-      "path": "tailwind.config.ts",
-      "accessCount": 3,
-      "lastAccessed": 1777387900188,
-      "type": "file"
-    },
-    {
-      "path": "src/lib/supabase/client.ts",
-      "accessCount": 3,
-      "lastAccessed": 1777394840467,
-      "type": "file"
-    },
-    {
-      "path": ".env.local",
-      "accessCount": 3,
-      "lastAccessed": 1777394966090,
-      "type": "file"
-    },
-    {
-      "path": "src/hooks/useUser.ts",
-      "accessCount": 2,
-      "lastAccessed": 1777376886663,
-      "type": "file"
-    },
-    {
-      "path": "src/lib/supabase/migrations/001_initial_schema.sql",
-      "accessCount": 2,
-      "lastAccessed": 1777377662375,
-      "type": "file"
-    },
-    {
-      "path": ".env.example",
-      "accessCount": 2,
-      "lastAccessed": 1777377936765,
-      "type": "file"
-    },
-    {
-      "path": "tsconfig.json",
-      "accessCount": 2,
-      "lastAccessed": 1777377999617,
-      "type": "file"
-    },
-    {
-      "path": "src/types/generation.ts",
-      "accessCount": 2,
-      "lastAccessed": 1777378246393,
-      "type": "file"
-    },
-    {
-      "path": "src/app/globals.css",
-      "accessCount": 2,
-      "lastAccessed": 1777387853212,
-      "type": "file"
-    },
-    {
-      "path": "src/app/contact/page.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1777390060294,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/auth/callback/route.ts",
-      "accessCount": 2,
-      "lastAccessed": 1777394883279,
-      "type": "file"
-    },
-    {
-      "path": "src/lib/supabase/README.md",
-      "accessCount": 1,
-      "lastAccessed": 1777370579681,
-      "type": "file"
-    },
-    {
-      "path": "next-env.d.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777371115530,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/auth/logout/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777376783397,
-      "type": "file"
-    },
-    {
-      "path": "src/lib/supabase/migrations/002_credits_functions.sql",
-      "accessCount": 1,
-      "lastAccessed": 1777377808749,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/credits/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777377855267,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/credits/transactions/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777377870619,
-      "type": "file"
-    },
-    {
-      "path": "src/components/credits/CreditBalance.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1777377886008,
-      "type": "file"
-    },
-    {
-      "path": "src/components/credits/CreditHistory.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1777377900149,
-      "type": "file"
-    },
-    {
-      "path": "src/lib/storage/r2.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777377914333,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/upload/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777377919657,
-      "type": "file"
-    },
-    {
-      "path": "src/app/refund/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1777378696323,
-      "type": "file"
-    },
-    {
-      "path": "src/components/layout/Footer.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1777378787471,
-      "type": "file"
-    },
-    {
-      "path": "src/app/pricing/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1777386541200,
-      "type": "file"
-    },
-    {
-      "path": "src/app/api/auth/google/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777394875097,
-      "type": "file"
-    },
-    {
-      "path": "src/lib/auth/server.ts",
-      "accessCount": 1,
-      "lastAccessed": 1777394883222,
-      "type": "file"
-    }
-  ],
+  "hotPaths": [],
   "userDirectives": []
 }
