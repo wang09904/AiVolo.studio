@@ -71,6 +71,27 @@ export async function getSignedUploadUrl(
 }
 
 /**
+ * 直接上传服务端生成的媒体文件到 R2
+ */
+export async function uploadBufferToR2(
+  key: string,
+  body: Buffer,
+  contentType: string
+): Promise<void> {
+  const client = getR2Client()
+  const bucket = getBucketName()
+
+  const command = new PutObjectCommand({
+    Bucket: bucket,
+    Key: key,
+    Body: body,
+    ContentType: contentType,
+  })
+
+  await client.send(command)
+}
+
+/**
  * 生成下载签名链接
  * @param key 文件存储路径
  * @param expiresIn 有效期（秒），默认 24 小时

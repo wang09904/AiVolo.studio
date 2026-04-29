@@ -5,7 +5,7 @@ import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: "AiVolo.studio",
-  description: "AI 图片/视频生成工具 - 简单、酷炫、便宜",
+  description: "Simple AI image generation for creators.",
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh">
+    <html lang="en">
       <body className="antialiased flex flex-col min-h-screen">
         <Header />
         {children}

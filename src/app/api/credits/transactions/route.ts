@@ -15,9 +15,12 @@ export async function GET() {
       return NextResponse.json({ error: '未登录' }, { status: 401 })
     }
 
-    // 调用数据库函数获取流水
     const { data, error } = await supabase
-      .rpc('get_credits_history', { p_user_id: user.id })
+      .from('credits_transactions')
+      .select('id, type, amount, description, created_at')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(100)
 
     if (error) {
       console.error('获取积分流水失败:', error)

@@ -1,48 +1,49 @@
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-/**
- * 需要登录才能访问的路径
- */
 const protectedPaths = ['/account']
 
-/**
- * 认证中间件
- * - 检查受保护路径是否已登录
- * - 未登录则重定向到首页（首页有登录按钮）
- */
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({ request })
 
-  // 检查是否是受保护的路径
-  const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path))
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet: Array<{ name: string; value: string; options?: Parameters<typeof response.cookies.set>[2] }>) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          response = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options))
+        },
+      },
+    }
+  )
+
+  const { pathname } = request.nextUrl
+  const isProtectedPath = protectedPaths.some((path) => pathname.startsWith(path))
 
   if (!isProtectedPath) {
-    return NextResponse.next()
+    return response
   }
 
-  // 获取 supabase session cookie
-  const supabaseSessionCookie = request.cookies.get('sb-access-token')?.value
+  const { data: { user } } = await supabase.auth.getUser()
 
-  // 如果没有 session，重定向到首页
-  if (!supabaseSessionCookie) {
+  if (!user) {
     const redirectUrl = new URL('/', request.url)
+    redirectUrl.searchParams.set('next', pathname)
     return NextResponse.redirect(redirectUrl)
   }
 
-  return NextResponse.next()
+  return response
 }
 
 export const config = {
   matcher: [
-    /*
-     * 匹配所有路径除了:
-     * - api (API 路由)
-     * - _next/static (静态文件)
-     * - _next/image (图片优化)
-     * - favicon.ico (网站图标)
-     * - 公共静态资源
-     */
     '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

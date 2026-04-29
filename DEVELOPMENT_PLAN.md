@@ -180,7 +180,9 @@ npm install @supabase/supabase-js @supabase/ssr next-intl
   - 用户输入提示词
   - 调用 API 中转（OpenAI 格式）
   - 返回生成结果
-  - 积分扣除
+  - 生成前通过 RPC 原子检查余额、预扣积分并创建 pending 任务
+  - 生成成功后更新任务为 completed
+  - 生成失败后更新任务为 failed 并自动退还预扣积分
 
 #### 任务16: 积分系统
 - **模块**: 后端
@@ -188,6 +190,8 @@ npm install @supabase/supabase-js @supabase/ssr next-intl
 - **前置依赖**: 任务4
 - **说明**:
   - 新用户 20 积分
+  - 生成任务启动时预扣积分
+  - 生成失败时自动退还预扣积分
   - 生成扣积分
   - 余额查询
   - 余额多端显示
@@ -351,6 +355,9 @@ npm install @supabase/supabase-js @supabase/ssr next-intl
 ### 8.4 积分
 - `GET /api/credits` - 获取积分余额
 - `GET /api/credits/transactions` - 获取积分流水
+- `create_generation_pending_atomic` - 原子检查余额、预扣积分、创建 pending 任务
+- `complete_generation_atomic` - 生成成功后写入结果并完成任务
+- `fail_generation_refund_atomic` - 生成失败后标记失败并退还预扣积分
 
 ### 8.5 模型
 - `GET /api/models` - 获取模型列表

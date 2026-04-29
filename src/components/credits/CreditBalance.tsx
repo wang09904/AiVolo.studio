@@ -15,59 +15,114 @@ export default function CreditBalance({ className = '' }: CreditBalanceProps) {
   const [credits, setCredits] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
-    const fetchCredits = async () => {
-      const supabase = createClient()
+    let isMounted = true
+    const supabase = createClient()
 
+    const fetchCredits = async () => {
       // 检查登录状态
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        setIsLoggedIn(false)
-        setIsLoading(false)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        if (isMounted) {
+          setCredits(null)
+          setIsLoggedIn(false)
+          setIsLoading(false)
+          setHasError(false)
+        }
         return
       }
 
-      setIsLoggedIn(true)
+      if (isMounted) {
+        setIsLoggedIn(true)
+        setIsLoading(true)
+        setHasError(false)
+      }
 
       // 获取积分
       try {
-        const response = await fetch('/api/credits')
+        const response = await fetch('/api/credits', {
+          cache: 'no-store',
+          credentials: 'include',
+        })
+        if (response.status === 401) {
+          if (isMounted) {
+            setCredits(null)
+            setIsLoggedIn(false)
+            setHasError(false)
+          }
+          return
+        }
         const data = await response.json()
-        setCredits(data.credits ?? 0)
+        if (!response.ok) {
+          if (isMounted) {
+            setCredits(null)
+            setHasError(true)
+          }
+          console.warn('Credits unavailable:', data.details || data.error || response.status)
+          return
+        }
+        if (isMounted) setCredits(data.credits)
       } catch (error) {
-        console.error('获取积分失败:', error)
-        setCredits(0)
+        console.warn('Credits request failed:', error instanceof Error ? error.message : error)
+        if (isMounted) {
+          setCredits(null)
+          setHasError(true)
+        }
       } finally {
-        setIsLoading(false)
+        if (isMounted) setIsLoading(false)
       }
     }
 
     fetchCredits()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      fetchCredits()
+    })
+
+    window.addEventListener('aivolo:credits-updated', fetchCredits)
+
+    return () => {
+      isMounted = false
+      window.removeEventListener('aivolo:credits-updated', fetchCredits)
+      subscription.unsubscribe()
+    }
   }, [])
 
   if (!isLoggedIn) {
     return (
       <a
         href="/api/auth/google"
-        className={`px-4 py-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white text-sm font-medium rounded-lg transition-all shadow-lg shadow-violet-500/25 ${className}`}
+        className={`px-4 py-2 bg-[oklch(72%_0.18_270)] hover:bg-[oklch(68%_0.18_270)] text-[oklch(16%_0.03_270)] text-sm font-medium rounded-md transition-colors ${className}`}
       >
-        登录
+        Sign in
       </a>
     )
   }
 
   if (isLoading) {
     return (
-      <span className={`px-4 py-2 bg-slate-800 text-slate-400 text-sm rounded-lg ${className}`}>
-        加载中...
+      <span className={`px-4 py-2 bg-[oklch(20%_0.018_270)] text-[oklch(66%_0.016_270)] text-sm rounded-md ${className}`}>
+        Loading...
       </span>
     )
   }
 
+  if (hasError) {
+    return (
+      <a
+        href="/account"
+        className={`px-4 py-2 bg-[oklch(24%_0.03_25)] border border-[oklch(42%_0.08_25)] text-[oklch(82%_0.08_25)] text-sm font-medium rounded-md ${className}`}
+      >
+        Credits unavailable
+      </a>
+    )
+  }
+
   return (
-    <span className={`px-4 py-2 bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium rounded-lg ${className}`}>
-      {credits ?? 0} 积分
+    <span className={`px-4 py-2 bg-[oklch(20%_0.03_270)] border border-[oklch(38%_0.05_270)] text-[oklch(82%_0.08_270)] text-sm font-medium rounded-md ${className}`}>
+      {credits ?? 0} credits
     </span>
   )
 }

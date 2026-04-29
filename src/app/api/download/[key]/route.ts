@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSignedDownloadUrl } from '@/lib/storage/r2'
+import { createClient } from '@/lib/supabase/server'
 
 /**
  * 获取下载签名链接
@@ -10,6 +11,13 @@ export async function GET(
   { params }: { params: Promise<{ key: string }> }
 ) {
   try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return NextResponse.json({ error: '未登录' }, { status: 401 })
+    }
+
     const { key } = await params
 
     if (!key) {
@@ -21,6 +29,13 @@ export async function GET(
 
     // 解码 URL 编码的文件路径
     const decodedKey = decodeURIComponent(key)
+
+    if (!decodedKey.includes(`/${user.id}/`)) {
+      return NextResponse.json(
+        { error: '无权下载该文件' },
+        { status: 403 }
+      )
+    }
 
     // 生成下载签名链接（24 小时有效期）
     const signedUrl = await getSignedDownloadUrl(decodedKey, 86400)

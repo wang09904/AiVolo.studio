@@ -68,22 +68,25 @@ const supabase = await createClient()
 
 ## 原子操作 RPC
 
-### create_generation_atomic
+### create_generation_pending_atomic
 
-创建生成任务并原子性地扣除积分：
+创建 pending 生成任务并原子性地预扣积分：
 
 ```sql
-SELECT create_generation_atomic(
+SELECT create_generation_pending_atomic(
   p_user_id UUID,
-  p_prompt TEXT,
-  p_model_id TEXT,
   p_generation_type TEXT,
-  p_credits_to_deduct INTEGER
+  p_model_id TEXT,
+  p_prompt TEXT,
+  p_credits_to_reserve INTEGER,
+  p_cost_usd DECIMAL
 ) RETURNS UUID
 ```
 
 该函数在同一个事务中完成：
 1. 检查积分余额
-2. 扣减积分
+2. 预扣积分
 3. 记录积分流水
-4. 创建生成记录
+4. 创建 pending 生成记录
+
+生成成功后调用 `complete_generation_atomic` 写入结果并标记 completed。生成失败后调用 `fail_generation_refund_atomic` 标记 failed 并退还预扣积分。

@@ -736,16 +736,17 @@
 ```
 用户提交请求
     ↓
-后端：Postgres RPC create_generation_atomic（原子操作：扣积分 + 创建任务记录）
+后端：Postgres RPC create_generation_pending_atomic
+      （原子操作：检查余额 + 预扣/冻结积分 + 创建 pending 任务记录）
     ↓
 Prompt工程师Agent → 设计编译器
     ↓（第二阶段：缓存层匹配）
 命中≥85%？→ 是：返回缓存（拟态loading 30秒，模拟真实图片生成）
     ↓ 否：调用模型能力层
     ↓（第一阶段：单模型单供应商；第二阶段：高可用路由层选择可用供应商）
-返回结果给用户 → 更新任务状态为"已完成"
+返回结果给用户 → complete_generation_atomic 更新任务状态为 completed
     ↓
-若生成失败：自动退还已扣除的积分（通过事务回滚）
+若生成失败：fail_generation_refund_atomic 更新任务状态为 failed，并自动退还预扣积分
 ```
 
 **视频生成管线**（异步，Webhook主推 + 前端轮询兜底）：
@@ -753,7 +754,8 @@ Prompt工程师Agent → 设计编译器
 ```
 用户点生成
     ↓
-后端：Postgres RPC create_generation_atomic（原子操作：扣积分 + 创建任务记录）
+后端：Postgres RPC create_generation_pending_atomic
+      （原子操作：检查余额 + 预扣/冻结积分 + 创建 pending 任务记录）
     ↓
 Prompt工程师Agent → 设计编译器
     ↓（第二阶段：缓存层匹配）
@@ -768,7 +770,7 @@ Prompt工程师Agent → 设计编译器
     ↓
 前端：显示结果
     ↓
-若生成失败：自动退还已扣除的积分（通过事务回滚或独立退款事务）
+若生成失败：fail_generation_refund_atomic 更新任务状态为 failed，并自动退还预扣积分
 ```
 
 **关键设计**：

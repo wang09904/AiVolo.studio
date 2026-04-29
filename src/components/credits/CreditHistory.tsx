@@ -44,7 +44,7 @@ export default function CreditHistory() {
     return (
       <div className="animate-pulse space-y-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-16 bg-gray-100 rounded" />
+          <div key={i} className="h-16 rounded bg-[oklch(22%_0.018_270)]" />
         ))}
       </div>
     )
@@ -52,7 +52,7 @@ export default function CreditHistory() {
 
   if (error) {
     return (
-      <div className="text-red-500 p-4">
+      <div className="p-4 text-[oklch(76%_0.12_25)]">
         {error}
       </div>
     )
@@ -60,18 +60,16 @@ export default function CreditHistory() {
 
   if (transactions.length === 0) {
     return (
-      <div className="text-gray-500 p-4 text-center">
-        暂无积分记录
+      <div className="p-4 text-center text-[oklch(62%_0.016_270)]">
+        No credit activity yet.
       </div>
     )
   }
 
   // 类型映射
   const typeLabels: Record<string, string> = {
-    reward: '奖励',
-    deduct: '消费',
-    purchase: '购买',
-    refund: '退款',
+    credit: 'Credit',
+    debit: 'Usage',
   }
 
   // 格式化时间
@@ -91,21 +89,21 @@ export default function CreditHistory() {
       {transactions.map((tx) => (
         <div
           key={tx.id}
-          className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+          className="flex items-center justify-between rounded-md border border-[oklch(29%_0.018_270)] bg-[oklch(12%_0.014_270)] p-4"
         >
           <div>
-            <p className="font-medium">
+            <p className="font-medium text-[oklch(90%_0.012_270)]">
               {typeLabels[tx.type] || tx.type}
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[oklch(62%_0.016_270)]">
               {formatDate(tx.created_at)}
             </p>
             {tx.description && (
-              <p className="text-sm text-gray-400">{tx.description}</p>
+              <p className="text-sm text-[oklch(58%_0.016_270)]">{tx.description}</p>
             )}
           </div>
-          <div className={`text-lg font-bold ${tx.type === 'deduct' ? 'text-red-500' : 'text-green-500'}`}>
-            {tx.type === 'deduct' ? '-' : '+'}{tx.amount}
+          <div className={`text-lg font-bold ${tx.amount < 0 ? 'text-[oklch(72%_0.18_25)]' : 'text-[oklch(72%_0.18_145)]'}`}>
+            {tx.amount > 0 ? '+' : ''}{tx.amount}
           </div>
         </div>
       ))}

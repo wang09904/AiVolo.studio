@@ -1,71 +1,48 @@
 import PricingCards from '@/components/ui/PricingCards';
+import { TEXT_TO_IMAGE_MODEL } from '@/lib/product';
+
+const faqs = [
+  {
+    q: 'What is available now?',
+    a: 'You can sign in with Google, use free credits, generate images from text, review account history, and read the legal pages. Payments, templates, image-to-image, and video generation are coming soon.',
+  },
+  {
+    q: 'How many credits does one image use?',
+    a: `${TEXT_TO_IMAGE_MODEL.name} uses ${TEXT_TO_IMAGE_MODEL.creditCost} credits per generated image. New users receive 20 free credits after login.`,
+  },
+  {
+    q: 'Can I subscribe today?',
+    a: 'Not yet. Lite and Pro subscriptions are visible now, and checkout will open once payment activation is complete.',
+  },
+];
 
 export default function PricingPage() {
   return (
-    <main className="min-h-screen relative overflow-hidden">
-      {/* 背景装饰 */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-950 via-purple-950 to-slate-950" />
-        <div className="absolute top-20 left-10 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl" />
-        <div className="absolute top-40 right-20 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-indigo-600/15 rounded-full blur-3xl" />
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-            backgroundSize: '40px 40px',
-          }}
-        />
-      </div>
-
-      <div className="container mx-auto px-4 max-w-6xl pt-20 pb-24">
-        {/* 页面标题 */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            简单透明的定价
+    <main className="min-h-screen bg-[oklch(13%_0.016_270)] px-6 py-16 text-[oklch(96%_0.01_270)] lg:px-10">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 max-w-3xl">
+          <p className="text-sm font-semibold text-[oklch(72%_0.18_270)]">Pricing</p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-normal md:text-6xl">
+            Lite and Pro, monthly or yearly.
           </h1>
-          <p className="text-lg text-slate-400 max-w-xl mx-auto">
-            选择适合您的计划，随时升级或降级，无隐藏费用
+          <p className="mt-5 text-lg leading-8 text-[oklch(74%_0.018_270)]">
+            Switch between monthly and yearly billing. Yearly plans show the same benefits at a lower monthly equivalent, with checkout marked Coming Soon until subscriptions open.
           </p>
         </div>
 
-        {/* 定价卡片组件 */}
         <PricingCards />
 
-        {/* FAQ 区域 */}
-        <div className="mt-20 max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold text-white text-center mb-8">
-            常见问题
-          </h2>
-          <div className="space-y-4">
-            {[
-              {
-                q: '积分如何计算？',
-                a: '每张图片生成消耗10积分，视频生成消耗50积分。生成失败时会自动退还积分。',
-              },
-              {
-                q: '可以随时取消订阅吗？',
-                a: '是的，您可以随时取消。取消后您的订阅会持续到当期结束，但不会自动续费。',
-              },
-              {
-                q: '年付有什么优惠？',
-                a: '年付套餐享受8折优惠，相当于免费获得2个月使用时间。',
-              },
-              {
-                q: '如何获取更多积分？',
-                a: '您可以升级到更高级的订阅计划获取更多积分，也可以等待积分自动重置（根据您的订阅周期）。',
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="bg-slate-900/40 border border-slate-800 rounded-xl p-5"
-              >
-                <h3 className="font-medium text-white mb-2">{item.q}</h3>
-                <p className="text-sm text-slate-400">{item.a}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <section className="mt-16 grid gap-4 md:grid-cols-3">
+          {faqs.map((item) => (
+            <article
+              key={item.q}
+              className="rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-5"
+            >
+              <h2 className="text-lg font-semibold">{item.q}</h2>
+              <p className="mt-3 text-sm leading-6 text-[oklch(72%_0.018_270)]">{item.a}</p>
+            </article>
+          ))}
+        </section>
       </div>
     </main>
   );

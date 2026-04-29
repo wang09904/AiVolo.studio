@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/auth/server'
 
-/**
- * 登出
- * 清除 session 并重定向到首页
- */
-export async function POST() {
+async function signOutAndRedirect() {
   const supabase = await createClient()
 
   const { error } = await supabase.auth.signOut()
@@ -16,4 +12,16 @@ export async function POST() {
   }
 
   return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_SITE_URL))
+}
+
+/**
+ * 登出
+ * 清除 session 并重定向到首页
+ */
+export async function GET() {
+  return signOutAndRedirect()
+}
+
+export async function POST() {
+  return signOutAndRedirect()
 }

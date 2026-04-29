@@ -1,174 +1,121 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-
-interface Feature {
-  text: string;
-  free?: string;
-  lite?: string;
-  pro?: string;
-}
-
-const FULL_FEATURES: Feature[] = [
-  { text: '积分', free: '20', lite: '300/月', pro: '800/月' },
-  { text: '图片额度/月', free: '20张', lite: '300张', pro: '800张' },
-  { text: '视频额度/月', free: '2个', lite: '30个', pro: '80个' },
-  { text: '并行任务', free: '1', lite: '2', pro: '3' },
-  { text: '可用模型', free: '基础模型', lite: '✅ 全部', pro: '✅ 全部' },
-  { text: '文生图', free: '✅', lite: '✅', pro: '✅' },
-  { text: '图生图', free: '✅', lite: '✅', pro: '✅' },
-  { text: '文生视频', free: '✅', lite: '✅', pro: '✅' },
-  { text: '图生视频', free: '✅', lite: '✅', pro: '✅' },
-  { text: '模板和特效', free: '✅', lite: '✅', pro: '✅' },
-  { text: '生成速度', free: '普通', lite: '普通', pro: '优先' },
-  { text: '输出质量', free: '标准', lite: '高清', pro: '4K/高清' },
-  { text: '水印', free: '有', lite: '无', pro: '无' },
-  { text: '历史记录', free: '7天', lite: '30天', pro: '1年' },
-  { text: '客服支持', free: '社区', lite: '邮件', pro: '优先' },
-];
-
-interface PricingTier {
-  name: string;
-  monthlyPrice: number;
-  yearlyPrice: number;
-  badge?: string;
-  isFree?: boolean;
-}
-
-const PRICING_TIERS: PricingTier[] = [
-  {
-    name: 'Free',
-    monthlyPrice: 0,
-    yearlyPrice: 0,
-    isFree: true,
-  },
-  {
-    name: 'Lite',
-    monthlyPrice: 15,
-    yearlyPrice: 10,
-    badge: '最划算',
-  },
-  {
-    name: 'Pro',
-    monthlyPrice: 29,
-    yearlyPrice: 14.5,
-    badge: '省50%',
-  },
-];
+import { PLAN_BENEFITS, PRICING_PLANS, type BillingCycle } from '@/lib/product';
 
 export default function PricingCards() {
-  const [isYearly, setIsYearly] = useState(false);
-
-  const getValue = (tier: PricingTier): string => {
-    if (tier.isFree) return '免费';
-    const price = isYearly ? tier.yearlyPrice : tier.monthlyPrice;
-    return `$${price}/月`;
-  };
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>('yearly');
 
   return (
     <div className="w-full">
-      {/* Tab 切换 */}
-      <div className="flex justify-center mb-10">
-        <div className="inline-flex bg-slate-800/50 p-1 rounded-xl border border-slate-700/50">
-          <button
-            onClick={() => setIsYearly(false)}
-            className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
-              !isYearly
-                ? 'bg-violet-600 text-white shadow-lg'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            月付
-          </button>
-          <button
-            onClick={() => setIsYearly(true)}
-            className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
-              isYearly
-                ? 'bg-violet-600 text-white shadow-lg'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            年付（按年计费）
-          </button>
+      <div className="mb-8 flex justify-center">
+        <div className="grid grid-cols-2 rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(16%_0.014_270)] p-1">
+          {([
+            { value: 'monthly', label: 'Monthly' },
+            { value: 'yearly', label: 'Yearly' },
+          ] as const).map((tab) => (
+            <button
+              key={tab.value}
+              type="button"
+              onClick={() => setBillingCycle(tab.value)}
+              className={`rounded-md px-6 py-3 text-sm font-semibold transition-colors ${
+                billingCycle === tab.value
+                  ? 'bg-[oklch(72%_0.18_270)] text-[oklch(16%_0.03_270)]'
+                  : 'text-[oklch(72%_0.018_270)] hover:text-[oklch(96%_0.01_270)]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* 定价卡片 - 4档产品横向排列 */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-        {PRICING_TIERS.map((tier) => (
-          <div
-            key={tier.name}
-            className={`relative rounded-2xl p-6 transition-all duration-300 ${
-              tier.badge
-                ? 'bg-gradient-to-b from-violet-600/20 to-purple-600/10 border-2 border-violet-500/50 shadow-xl shadow-violet-500/10'
-                : 'bg-slate-900/60 border border-slate-800 hover:border-slate-700 hover:shadow-lg hover:shadow-black/20'
-            }`}
-          >
-            {/* 标签 */}
-            {tier.badge && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                  tier.badge === '最划算'
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-violet-600 text-white'
-                }`}>
-                  {tier.badge}
-                </span>
+      <div className="grid gap-5 lg:grid-cols-2">
+        {PRICING_PLANS.map((plan) => {
+          const isYearly = billingCycle === 'yearly';
+          const benefitKey = plan.benefitKey as 'lite' | 'pro';
+
+          return (
+            <article
+              key={plan.key}
+              className={`rounded-lg border p-6 transition-colors ${
+                isYearly
+                  ? 'border-[oklch(72%_0.18_270_/_0.7)] bg-[oklch(19%_0.035_270)]'
+                  : 'border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)]'
+              }`}
+            >
+              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h3 className="text-3xl font-semibold text-[oklch(98%_0.01_270)]">{plan.plan}</h3>
+                    <span className="rounded-full bg-[oklch(72%_0.18_270)] px-3 py-1 text-xs font-semibold text-[oklch(16%_0.03_270)]">
+                      {isYearly ? plan.yearlyBadge : plan.monthlyBadge}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm text-[oklch(70%_0.018_270)]">
+                    {isYearly ? 'Billed yearly. Monthly equivalent shown.' : 'Billed monthly.'}
+                  </p>
+                </div>
+
+                {isYearly ? (
+                  <div className="rounded-md border border-[oklch(72%_0.18_270_/_0.45)] bg-[oklch(15%_0.02_270)] px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <span className="text-sm text-[oklch(67%_0.018_270)] line-through">
+                        {plan.yearlyOriginalPrice}
+                      </span>
+                      <span className="text-3xl font-semibold text-[oklch(98%_0.01_270)]">
+                        {plan.yearlyPrice}
+                      </span>
+                      <span className="text-sm text-[oklch(72%_0.018_270)]">/ month</span>
+                    </div>
+                    <p className="mt-1 text-xs font-semibold text-[oklch(82%_0.08_270)]">{plan.yearlySavings}</p>
+                  </div>
+                ) : (
+                  <div className="text-right">
+                    <span className="text-4xl font-semibold text-[oklch(98%_0.01_270)]">{plan.monthlyPrice}</span>
+                    <span className="text-sm text-[oklch(72%_0.018_270)]"> / month</span>
+                  </div>
+                )}
               </div>
-            )}
 
-            {/* 套餐名称 */}
-            <h3 className="text-lg font-bold text-white mb-1">{tier.name}</h3>
-            <p className="text-xs text-slate-500 mb-4">
-              {isYearly ? '按年计费' : '月付'}
-            </p>
-
-            {/* 价格 */}
-            <div className="mb-6">
-              <span className="text-4xl font-bold text-white">{getValue(tier)}</span>
-            </div>
-
-            {/* 功能列表 - 完整14项权益 */}
-            <ul className="space-y-3 mb-6">
-              {FULL_FEATURES.map((feature) => (
-                <li key={feature.text} className="flex items-center justify-between text-sm">
-                  <span className="text-slate-400">{feature.text}</span>
-                  <span className={`font-medium ${
-                    tier.isFree
-                      ? feature.free?.startsWith('✅') ? 'text-emerald-400' : 'text-slate-300'
-                      : feature.lite?.startsWith('✅') ? 'text-emerald-400' : 'text-slate-300'
-                  }`}>
-                    {tier.isFree ? feature.free : tier.name === 'Lite' ? feature.lite : feature.pro}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            {/* 按钮 */}
-            {tier.isFree ? (
-              <Link
-                href="/api/auth/google"
-                className="block w-full py-3 px-4 text-center border border-slate-600 hover:border-slate-500 text-slate-300 font-medium rounded-xl transition-all hover:bg-slate-800/50"
-              >
-                开始试用
-              </Link>
-            ) : (
               <button
                 disabled
-                className="w-full py-3 px-4 bg-slate-700/50 text-slate-500 font-medium rounded-xl cursor-not-allowed"
+                className="mb-6 w-full rounded-md border border-[oklch(34%_0.02_270)] bg-[oklch(24%_0.015_270)] px-4 py-3 text-sm font-semibold text-[oklch(66%_0.015_270)]"
               >
-                即将推出
+                Coming Soon
               </button>
-            )}
-          </div>
-        ))}
+
+              <div className="border-t border-[oklch(29%_0.018_270)] pt-5">
+                <p className="mb-4 text-sm font-semibold text-[oklch(90%_0.012_270)]">
+                  Same benefits on monthly and yearly plans
+                </p>
+                <ul className="grid gap-3 text-sm text-[oklch(76%_0.018_270)] sm:grid-cols-2">
+                  {PLAN_BENEFITS.map((benefit) => (
+                    <li key={benefit.label} className="flex items-start justify-between gap-4">
+                      <span>{benefit.label}</span>
+                      <span className="shrink-0 font-semibold text-[oklch(90%_0.012_270)]">
+                        {benefit[benefitKey]}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          );
+        })}
       </div>
 
-      {/* 底部提示 */}
-      <p className="text-center text-sm text-slate-500 mt-8">
-        所有价格均为美元。随时取消，无隐藏费用。
-      </p>
+      <aside className="mt-5 rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(15%_0.014_270)] p-5">
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+          <div>
+            <h3 className="text-xl font-semibold text-[oklch(96%_0.01_270)]">Free trial</h3>
+            <p className="mt-1 text-sm text-[oklch(70%_0.018_270)]">
+              Start with 20 credits, standard speed, basic models, 7-day history, and community support.
+            </p>
+          </div>
+          <span className="text-3xl font-semibold text-[oklch(98%_0.01_270)]">$0</span>
+        </div>
+      </aside>
     </div>
   );
 }

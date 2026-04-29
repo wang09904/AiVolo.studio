@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/auth/server'
+import { ensureUserProfile } from '@/lib/auth/profile'
+
+export const dynamic = 'force-dynamic'
 
 /**
  * 获取当前用户积分余额
@@ -15,30 +18,20 @@ export async function GET() {
       return NextResponse.json({ error: '未登录' }, { status: 401 })
     }
 
-    // 调用数据库函数获取积分余额
-    const { data, error } = await supabase
-      .rpc('get_user_credits', { p_user_id: user.id })
+    const { profile, error: profileError } = await ensureUserProfile(supabase, user)
 
-    if (error) {
-      console.error('获取积分失败:', error)
-      return NextResponse.json({ error: '获取积分失败' }, { status: 500 })
+    if (profileError || !profile) {
+      console.error('获取或创建用户资料失败:', profileError)
+      return NextResponse.json(
+        {
+          error: 'Failed to initialize user credits',
+          details: profileError instanceof Error ? profileError.message : profileError,
+        },
+        { status: 500 }
+      )
     }
 
-    // 如果用户不存在，创建用户记录并赋予初始积分
-    if (!data || data.length === 0) {
-      // 尝试授予初始积分
-      const { data: grantResult, error: grantError } = await supabase
-        .rpc('grant_initial_credits', { p_user_id: user.id })
-
-      if (grantError) {
-        console.error('授予初始积分失败:', grantError)
-        return NextResponse.json({ credits: 0 })
-      }
-
-      return NextResponse.json({ credits: grantResult?.[0]?.new_balance || 20 })
-    }
-
-    return NextResponse.json({ credits: data[0]?.credits || 0 })
+    return NextResponse.json({ credits: profile.credits_balance ?? 0 })
   } catch (error) {
     console.error('积分接口错误:', error)
     return NextResponse.json({ error: '服务器错误' }, { status: 500 })

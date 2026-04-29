@@ -115,10 +115,12 @@ CREATE TABLE webhooks_log (
 -- ============================================
 CREATE OR REPLACE FUNCTION create_generation_atomic(
   p_user_id UUID,
-  p_prompt TEXT,
-  p_model_id TEXT,
   p_generation_type TEXT,
-  p_credits_to_deduct INTEGER
+  p_model_id TEXT,
+  p_prompt TEXT,
+  p_image_url TEXT,
+  p_credits_to_deduct INTEGER,
+  p_cost_usd DECIMAL DEFAULT 0
 ) RETURNS UUID AS $$
 DECLARE
   v_generation_id UUID;
@@ -139,9 +141,9 @@ BEGIN
   INSERT INTO credits_transactions (user_id, amount, type, description)
   VALUES (p_user_id, -p_credits_to_deduct, 'debit', 'Generation: ' || p_generation_type);
 
-  -- 创建生成记录
-  INSERT INTO generations (id, user_id, prompt, model_id, generation_type, credits_used, status)
-  VALUES (gen_random_uuid(), p_user_id, p_prompt, p_model_id, p_generation_type, p_credits_to_deduct, 'pending')
+  -- 创建已完成的生成记录
+  INSERT INTO generations (id, user_id, prompt, model_id, generation_type, image_url, credits_used, cost_usd, status)
+  VALUES (gen_random_uuid(), p_user_id, p_prompt, p_model_id, p_generation_type, p_image_url, p_credits_to_deduct, p_cost_usd, 'completed')
   RETURNING id INTO v_generation_id;
 
   RETURN v_generation_id;
@@ -174,6 +176,7 @@ ALTER TABLE webhooks_log ENABLE ROW LEVEL SECURITY;
 
 -- users 策略：用户只能查看和更新自己的数据
 CREATE POLICY "users_self_select" ON users FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "users_self_insert" ON users FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "users_self_update" ON users FOR UPDATE USING (auth.uid() = id);
 
 -- subscriptions 策略：用户只能操作自己的订阅
@@ -181,6 +184,7 @@ CREATE POLICY "subscriptions_self_all" ON subscriptions FOR ALL USING (auth.uid(
 
 -- credits_transactions 策略：用户只能查看自己的积分流水
 CREATE POLICY "credits_transactions_self_all" ON credits_transactions FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "credits_transactions_self_insert" ON credits_transactions FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- generations 策略：用户只能操作自己的生成记录
 CREATE POLICY "generations_self_all" ON generations FOR ALL USING (auth.uid() = user_id);
@@ -202,7 +206,7 @@ CREATE POLICY "webhooks_log_insert" ON webhooks_log FOR INSERT WITH CHECK (true)
 -- ============================================
 -- 插入默认模型
 INSERT INTO models (name, provider, type, api_format, logo_url, is_active) VALUES
-  ('GPT Image 1', 'OpenAI', 'image', 'openai', '/models/gpt-image.svg', true),
+  ('GPT Image 2', 'OpenAI', 'image', 'openai', '/models/gpt-image.svg', true),
   ('DALL-E 3', 'OpenAI', 'image', 'openai', '/models/dalle.svg', true),
   ('Stable Diffusion 3', 'Stability AI', 'image', 'openai', '/models/sd3.svg', true),
   ('Flux Pro', 'Black Forest Labs', 'image', 'openai', '/models/flux.svg', true),

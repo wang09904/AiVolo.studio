@@ -26,7 +26,7 @@ export async function getCurrentUser(): Promise<User | null> {
   // 获取用户的积分信息
   const { data: userData, error: userError } = await supabase
     .from('users')
-    .select('id, email, name, avatar_url, credits')
+    .select('id, email, name, avatar, credits_balance')
     .eq('id', user.id)
     .single()
 
@@ -41,5 +41,11 @@ export async function getCurrentUser(): Promise<User | null> {
     }
   }
 
-  return userData as User
+  return {
+    id: userData.id,
+    email: userData.email,
+    name: userData.name,
+    avatar_url: userData.avatar,
+    credits: userData.credits_balance,
+  }
 }

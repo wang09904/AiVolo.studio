@@ -1,123 +1,365 @@
+import { randomUUID } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { ensureUserProfile } from '@/lib/auth/profile';
+import { ASPECT_RATIO_DIMENSIONS, TEXT_TO_IMAGE_MODEL } from '@/lib/product';
+import { getSignedDownloadUrl, uploadBufferToR2 } from '@/lib/storage/r2';
+import type { AspectRatio } from '@/types/generation';
 
-/**
- * 图片生成 API
- * POST /api/generate/image
- * Body: { prompt, model_id, aspect_ratio }
- */
-export async function POST(request: NextRequest) {
+type OpenAIImageResponse = {
+  data?: Array<{
+    url?: string;
+    b64_json?: string;
+    task_id?: string;
+  }>;
+  code?: number;
+  error?: {
+    message?: string;
+  } | string;
+  message?: string;
+};
+
+type ProviderErrorResponse = {
+  error?: {
+    message?: string;
+    type?: string;
+    code?: string;
+  } | string;
+};
+
+const isAspectRatio = (value: unknown): value is AspectRatio =>
+  typeof value === 'string' && value in ASPECT_RATIO_DIMENSIONS;
+
+function normalizeImageEndpoint(rawUrl: string): string {
+  const trimmedUrl = rawUrl.trim().replace(/\/+$/, '');
+
+  if (/\/v1\/images\/generations$/.test(trimmedUrl)) return trimmedUrl;
+  if (/\/images\/generations$/.test(trimmedUrl)) return trimmedUrl;
+
+  return trimmedUrl
+    .replace(/\/v1\/chat\/completions$/, '/v1/images/generations')
+    .replace(/\/chat\/completions$/, '/images/generations')
+    .replace(/\/v1$/, '/v1/images/generations')
+    .replace(/$/, '/v1/images/generations');
+}
+
+function getTaskEndpoint(imageEndpoint: string, taskId: string): string | null {
   try {
-    const body = await request.json();
-    const { prompt, model_id, aspect_ratio } = body;
+    const url = new URL(imageEndpoint);
+    url.pathname = url.pathname
+      .replace(/\/images\/generations\/?$/, `/tasks/${encodeURIComponent(taskId)}`)
+      .replace(/\/chat\/completions\/?$/, `/tasks/${encodeURIComponent(taskId)}`);
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
 
-    // 1. 验证必填参数
-    if (!prompt || !model_id) {
+function getProviderMessage(data: ProviderErrorResponse | OpenAIImageResponse): string | undefined {
+  if (typeof data.error === 'string') return data.error;
+  if (data.error?.message) return data.error.message;
+  return 'message' in data && typeof data.message === 'string' ? data.message : undefined;
+}
+
+function extractImageUrl(value: unknown): string | null {
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value) && typeof value[0] === 'string') return value[0];
+  return null;
+}
+
+async function getGeneratedImageBuffer(data: OpenAIImageResponse): Promise<Buffer | null> {
+  const image = data.data?.[0];
+
+  if (image?.b64_json) {
+    return Buffer.from(image.b64_json, 'base64');
+  }
+
+  const imageUrl = extractImageUrl(image?.url);
+
+  if (imageUrl) {
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) return null;
+    return Buffer.from(await imageResponse.arrayBuffer());
+  }
+
+  return null;
+}
+
+async function pollGeneratedImage(
+  imageEndpoint: string,
+  taskId: string,
+  apiKey: string
+): Promise<{ imageBuffer: Buffer | null; error?: string }> {
+  const taskEndpoint = getTaskEndpoint(imageEndpoint, taskId);
+  if (!taskEndpoint) return { imageBuffer: null, error: 'Invalid task endpoint.' };
+
+  for (let attempt = 0; attempt < 24; attempt += 1) {
+    await new Promise((resolve) => setTimeout(resolve, attempt === 0 ? 12000 : 5000));
+
+    const response = await fetch(taskEndpoint, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+
+    const data = (await response.json().catch(() => ({}))) as {
+      code?: number;
+      data?: {
+        status?: string;
+        error?: { message?: string };
+        result?: { images?: Array<{ url?: string | string[] }> };
+      };
+      error?: { message?: string } | string;
+      message?: string;
+    };
+
+    if (!response.ok || (typeof data.code === 'number' && data.code !== 200)) {
+      return { imageBuffer: null, error: getProviderMessage(data) || 'Task polling failed.' };
+    }
+
+    const status = data.data?.status;
+
+    if (status === 'failed') {
+      return { imageBuffer: null, error: data.data?.error?.message || 'Image task failed.' };
+    }
+
+    if (status === 'completed') {
+      const imageUrl = extractImageUrl(data.data?.result?.images?.[0]?.url);
+      if (!imageUrl) return { imageBuffer: null, error: 'Completed task did not include an image URL.' };
+
+      const imageResponse = await fetch(imageUrl);
+      if (!imageResponse.ok) return { imageBuffer: null, error: 'Generated image download failed.' };
+
+      return { imageBuffer: Buffer.from(await imageResponse.arrayBuffer()) };
+    }
+  }
+
+  return { imageBuffer: null, error: 'Image generation timed out.' };
+}
+
+export async function POST(request: NextRequest) {
+  let refundContext: {
+    supabase: Awaited<ReturnType<typeof createClient>>;
+    userId: string;
+    generationId: string;
+  } | null = null;
+
+  const refundReservedCredits = async (reason: string) => {
+    if (!refundContext) return;
+
+    const { error } = await refundContext.supabase.rpc('fail_generation_refund_atomic', {
+      p_user_id: refundContext.userId,
+      p_generation_id: refundContext.generationId,
+      p_reason: reason,
+    });
+
+    if (error) {
+      console.error('Reserved credits refund failed:', error);
+    }
+  };
+
+  try {
+    const body = (await request.json()) as Record<string, unknown>;
+    const prompt = typeof body.prompt === 'string' ? body.prompt.trim() : '';
+    const modelId = typeof body.model_id === 'string' ? body.model_id : '';
+    const aspectRatio = isAspectRatio(body.aspect_ratio) ? body.aspect_ratio : '1:1';
+
+    if (!prompt || !modelId) {
       return NextResponse.json(
-        { success: false, error: '缺少必填参数' },
+        { success: false, error: 'Missing required parameters.' },
         { status: 400 }
       );
     }
 
-    // 2. 验证登录状态
+    if (modelId !== TEXT_TO_IMAGE_MODEL.id) {
+      return NextResponse.json(
+        { success: false, error: 'This model is not available yet.' },
+        { status: 400 }
+      );
+    }
+
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json(
-        { success: false, error: '请先登录' },
+        { success: false, error: 'Please sign in first.' },
         { status: 401 }
       );
     }
 
-    // 3. 检查用户积分
-    const { data: credits } = await supabase
-      .from('credits')
-      .select('balance')
-      .eq('user_id', user.id)
-      .single();
+    const { profile, error: profileError } = await ensureUserProfile(supabase, user);
 
-    const balance = credits?.balance ?? 0;
-    const generationCost = 10; // 每次生成消耗积分
-
-    if (balance < generationCost) {
+    if (profileError || !profile) {
+      console.error('User profile missing:', profileError);
       return NextResponse.json(
-        { success: false, error: '积分不足，请先充值' },
+        { success: false, error: 'We could not prepare your free credits. Please refresh and try again.' },
+        { status: 500 }
+      );
+    }
+
+    if ((profile.credits_balance ?? 0) < TEXT_TO_IMAGE_MODEL.creditCost) {
+      return NextResponse.json(
+        { success: false, error: 'Not enough credits.' },
         { status: 402 }
       );
     }
 
-    // 4. 调用 OpenAI 中转 API 生成图片
-    const apiUrl = process.env.OPENAI_API_URL;
+    const apiUrl = process.env.OPENAI_API_URL || process.env.OPENAI_BASE_URL;
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiUrl || !apiKey) {
-      console.error('API 配置不完整');
+      console.error('OpenAI proxy API configuration is incomplete.');
       return NextResponse.json(
-        { success: false, error: '服务配置错误' },
+        { success: false, error: 'Service configuration error.' },
         { status: 500 }
       );
     }
 
-    // 计算宽高比
-    const aspectRatios: Record<string, { width: number; height: number }> = {
-      '1:1': { width: 1024, height: 1024 },
-      '16:9': { width: 1344, height: 756 },
-      '9:16': { width: 756, height: 1344 },
-      '4:3': { width: 1152, height: 864 },
-      '3:4': { width: 864, height: 1152 },
-    };
-    const dimensions = aspectRatios[aspect_ratio] || aspectRatios['1:1'];
+    const { data: pendingGenerationId, error: reserveError } = await supabase.rpc(
+      'create_generation_pending_atomic',
+      {
+        p_user_id: user.id,
+        p_generation_type: 'text_to_image',
+        p_model_id: TEXT_TO_IMAGE_MODEL.id,
+        p_prompt: prompt,
+        p_credits_to_reserve: TEXT_TO_IMAGE_MODEL.creditCost,
+        p_cost_usd: TEXT_TO_IMAGE_MODEL.costUsd,
+      }
+    );
 
-    const response = await fetch(apiUrl, {
+    if (reserveError || !pendingGenerationId) {
+      console.error('Generation reservation failed:', reserveError);
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            process.env.NODE_ENV === 'development'
+              ? `Could not reserve credits: ${reserveError?.message || 'Unknown database error'}`
+              : 'Could not reserve credits.',
+        },
+        { status: 500 }
+      );
+    }
+
+    refundContext = {
+      supabase,
+      userId: user.id,
+      generationId: pendingGenerationId as string,
+    };
+
+    const imageEndpoint = normalizeImageEndpoint(apiUrl);
+    const isUiUiApi = imageEndpoint.includes('uiuiapi.com');
+    const dimensions = ASPECT_RATIO_DIMENSIONS[aspectRatio];
+    const response = await fetch(imageEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: model_id,
-        prompt: prompt,
+        model: isUiUiApi ? TEXT_TO_IMAGE_MODEL.apiModelId : TEXT_TO_IMAGE_MODEL.openaiApiModelId,
+        prompt,
         n: 1,
-        size: `${dimensions.width}x${dimensions.height}`,
-        response_format: 'url',
+        size: isUiUiApi ? aspectRatio : `${dimensions.width}x${dimensions.height}`,
       }),
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error('API 调用失败:', response.status, errorData);
+      const errorData = (await response.json().catch(() => ({}))) as ProviderErrorResponse;
+      console.error('Image generation provider failed:', response.status, errorData);
+      const providerMessage = getProviderMessage(errorData);
+      await refundReservedCredits(providerMessage || 'Image provider rejected the request');
+
       return NextResponse.json(
-        { success: false, error: '生成失败，请稍后重试' },
-        { status: 500 }
+        {
+          success: false,
+          error:
+            process.env.NODE_ENV === 'development' && providerMessage
+              ? `Image provider rejected the request: ${providerMessage}`
+              : 'Image provider rejected the request. Please try again later.',
+        },
+        { status: 502 }
       );
     }
 
-    const data = await response.json();
-    const imageUrl = data.data?.[0]?.url;
+    const data = (await response.json()) as OpenAIImageResponse;
+    const taskId = data.data?.[0]?.task_id;
+    const providerMessage = getProviderMessage(data);
+    let imageBuffer = await getGeneratedImageBuffer(data);
 
-    if (!imageUrl) {
+    if (!imageBuffer && taskId) {
+      const pollResult = await pollGeneratedImage(imageEndpoint, taskId, apiKey);
+      imageBuffer = pollResult.imageBuffer;
+
+      if (!imageBuffer && pollResult.error) {
+        await refundReservedCredits(pollResult.error);
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              process.env.NODE_ENV === 'development'
+                ? `Image provider task failed: ${pollResult.error}`
+                : 'Image provider task failed. Please try again later.',
+          },
+          { status: 502 }
+        );
+      }
+    }
+
+    if (!imageBuffer) {
+      await refundReservedCredits(providerMessage || 'Generation result was invalid');
       return NextResponse.json(
-        { success: false, error: '生成结果无效' },
-        { status: 500 }
+        {
+          success: false,
+          error:
+            process.env.NODE_ENV === 'development' && providerMessage
+              ? `Generation result was invalid: ${providerMessage}`
+              : 'Generation result was invalid.',
+        },
+        { status: 502 }
       );
     }
 
-    // 5. 扣除积分并创建生成记录（原子操作）
-    const { data: result, error: dbError } = await supabase.rpc('create_generation_atomic', {
+    const objectKey = `generations/${user.id}/${randomUUID()}.png`;
+    let imageUrl: string;
+
+    try {
+      await uploadBufferToR2(objectKey, imageBuffer, 'image/png');
+      imageUrl = await getSignedDownloadUrl(objectKey);
+    } catch (storageError) {
+      console.error('Generated image storage failed:', storageError);
+      await refundReservedCredits('Generated image could not be saved');
+      return NextResponse.json(
+        { success: false, error: 'Generated image could not be saved. Please try again later.' },
+        { status: 502 }
+      );
+    }
+
+    const { data: generationId, error: dbError } = await supabase.rpc('complete_generation_atomic', {
       p_user_id: user.id,
-      p_generation_type: 'image',
-      p_model_id: model_id,
-      p_prompt: prompt,
+      p_generation_id: pendingGenerationId,
       p_image_url: imageUrl,
-      p_cost: generationCost,
-      p_cost_usd: 0.1,
+      p_storage_key: objectKey,
     });
 
     if (dbError) {
-      console.error('数据库操作失败:', dbError);
+      console.error('Generation completion failed:', dbError);
+      await refundReservedCredits('Generation completion failed');
       return NextResponse.json(
-        { success: false, error: '积分扣除失败' },
+        {
+          success: false,
+          error:
+            process.env.NODE_ENV === 'development'
+              ? `Generation completion failed: ${dbError.message}`
+              : 'Generation completion failed.',
+          details:
+            process.env.NODE_ENV === 'development'
+              ? {
+                  code: dbError.code,
+                  details: dbError.details,
+                  hint: dbError.hint,
+                }
+              : undefined,
+        },
         { status: 500 }
       );
     }
@@ -125,18 +367,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       generation: {
-        id: result,
+        id: generationId,
         image_url: imageUrl,
-        prompt: prompt,
-        model_id: model_id,
-        created_at: new Date().toISOString(),
+        status: 'completed',
       },
     });
-
   } catch (error) {
-    console.error('生成图片错误:', error);
+    console.error('Generate image route failed:', error);
+    await refundReservedCredits('Unexpected server error');
     return NextResponse.json(
-      { success: false, error: '服务器错误' },
+      { success: false, error: 'Server error.' },
       { status: 500 }
     );
   }

@@ -41,8 +41,9 @@ npm run lint   # ESLint 检查
 - 登录触发时机：**点击生成按钮时**才检查登录
 
 ### 积分系统
-- 每次生成消耗 **10 积分**
-- 通过 `create_generation_atomic` RPC 原子操作扣减（防止超扣）
+- 文生图高级模型每次生成消耗 **3 积分**
+- 通过 `create_generation_pending_atomic` RPC 原子预扣积分并创建 pending 任务（防止超扣）
+- 生成成功后调用 `complete_generation_atomic` 写入结果；生成失败后调用 `fail_generation_refund_atomic` 退还预扣积分
 - `credits_transactions` 表记录流水用于对账
 
 ---
@@ -71,7 +72,7 @@ npm run lint   # ESLint 检查
 
 - **URL**: `https://kjrchuzrpfhxnjqhefze.supabase.co`
 - **ANON_KEY**: 用于客户端
-- **RPC**: `create_generation_atomic` — 原子扣积创建任务
+- **RPC**: `create_generation_pending_atomic` / `complete_generation_atomic` / `fail_generation_refund_atomic` — 生成任务预扣、完成与失败退款
 
 **关键表**：
 - `users` — 用户信息（Google OAuth）
