@@ -1,5 +1,8 @@
 # AiVolo.studio 产品规格文档 (SPEC)
 
+> Deprecated. This document is superseded by [`SPEC_V2.md`](/Users/wangyong/Documents/项目/AiVolo.studio/SPEC_V2.md).
+> Keep only for historical reference.
+
 > 版本：v2.1
 > 日期：2026-04-28
 > 状态：根据 Deep Interview 调研结果更新（22轮访谈）
