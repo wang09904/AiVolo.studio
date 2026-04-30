@@ -2,7 +2,8 @@
 
 > 版本：v2.1
 > 日期：2026-04-28
-> 状态：同步SPEC.md更新
+> 状态：已归档，仅作历史参考
+> 替代文档：[`DEVELOPMENT_PLAN_V2.md`](../development/DEVELOPMENT_PLAN_V2.md)，产品规格以 [`SPEC_V2.md`](../development/SPEC_V2.md) 为准
 > 规范：OMC Agent Team
 
 ---
@@ -1031,8 +1032,8 @@ ai-video-tool/
 
 | 资源 | 说明 |
 |------|------|
-| SPEC.md | 产品规格文档 |
-| `src/reference/multi-agent-image/` | 参考实现（设计编译器、编排器等） |
+| [`SPEC_V2.md`](../development/SPEC_V2.md) | 当前产品规格文档 |
+| `references/multi-agent-image/` | 参考实现（设计编译器、编排器等） |
 | Pollo.ai | 主要竞品参考 |
 | Next.js 15 Docs | 框架文档 |
 | Supabase Docs | 数据库文档 |
@@ -1157,4 +1158,4 @@ record_generation() RPC（独立事务）
 
 ---
 
-*文档状态：同步SPEC.md更新*
+*文档状态：已归档，仅作历史参考；当前规格见 [`SPEC_V2.md`](../development/SPEC_V2.md)。*

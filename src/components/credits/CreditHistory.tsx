@@ -11,9 +11,6 @@ interface Transaction {
   created_at: string
 }
 
-/**
- * 积分流水记录组件
- */
 export default function CreditHistory() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -26,12 +23,12 @@ export default function CreditHistory() {
         const data = await response.json()
 
         if (!response.ok) {
-          throw new Error(data.error || '获取流水失败')
+          throw new Error(data.error || 'Credit activity is unavailable.')
         }
 
         setTransactions(data.transactions || [])
       } catch (err) {
-        setError(err instanceof Error ? err.message : '获取流水失败')
+        setError(err instanceof Error ? err.message : 'Credit activity is unavailable.')
       } finally {
         setIsLoading(false)
       }
@@ -66,16 +63,14 @@ export default function CreditHistory() {
     )
   }
 
-  // 类型映射
   const typeLabels: Record<string, string> = {
     credit: 'Credit',
     debit: 'Usage',
   }
 
-  // 格式化时间
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
-    return new Intl.DateTimeFormat('zh-CN', {
+    return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',

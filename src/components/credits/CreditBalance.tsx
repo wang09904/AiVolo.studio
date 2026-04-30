@@ -7,10 +7,6 @@ interface CreditBalanceProps {
   className?: string
 }
 
-/**
- * 显示用户积分余额的组件
- * 登录后显示，未登录显示"登录"
- */
 export default function CreditBalance({ className = '' }: CreditBalanceProps) {
   const [credits, setCredits] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -22,7 +18,6 @@ export default function CreditBalance({ className = '' }: CreditBalanceProps) {
     const supabase = createClient()
 
     const fetchCredits = async () => {
-      // 检查登录状态
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
         if (isMounted) {
@@ -40,7 +35,6 @@ export default function CreditBalance({ className = '' }: CreditBalanceProps) {
         setHasError(false)
       }
 
-      // 获取积分
       try {
         const response = await fetch('/api/credits', {
           cache: 'no-store',

@@ -85,4 +85,4 @@ npm run dev
 - The user confirmed credits now initialize correctly at 20 credits.
 - The user confirmed image generation can succeed.
 - The unresolved problems are now limited to generated image download and account history persistence/display.
-- Treat `SPEC.md`, `DEVELOPMENT_PLAN.md`, `CLAUDE.md`, and this `README.md` as the current task-status sources when resuming work.
+- Treat `docs/development/SPEC_V2.md`, `docs/development/DEVELOPMENT_PLAN_V2.md`, `AGENTS.md`, `CLAUDE.md`, and this `README.md` as the current task-status sources when resuming work. Legacy documents are under `docs/archive/`.

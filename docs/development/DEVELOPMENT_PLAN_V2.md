@@ -1,8 +1,8 @@
 # AiVolo.studio 开发计划与 Agent 编排 V2
 
-> 本文档用于替代旧版 `DEVELOPMENT_PLAN.md`。  
+> 本文档用于替代旧版 [`DEVELOPMENT_PLAN.md`](../archive/DEVELOPMENT_PLAN.md)。  
 > 本文档同时承担三项职责：开发计划、实时进度看板、AI 多 Agent 编排与质量门禁。  
-> 产品规格以 `SPEC_V2.md` 为准；本文件负责执行、状态、依赖、验收和交付流程。
+> 产品规格以 [`SPEC_V2.md`](./SPEC_V2.md) 为准；本文件负责执行、状态、依赖、验收和交付流程。
 
 ---
 
@@ -75,7 +75,7 @@
 
 职责包括：
 
-- 阅读并遵守 `SPEC_V2.md`。
+- 阅读并遵守 [`SPEC_V2.md`](./SPEC_V2.md)。
 - 拆分任务模块。
 - 判断并行与串行关系。
 - 指派专业 Agent。
@@ -111,8 +111,8 @@
 
 | 模块 | 主要任务 | 推荐 Agent 类型 | 并行性 | 前置依赖 | 主要交付物 |
 | --- | --- | --- | --- | --- | --- |
-| 产品规格 | SPEC 维护、范围控制、决策追踪 | product/planner | 串行主控 | 用户输入 | `SPEC_V2.md` |
-| 开发计划 | 阶段拆解、状态看板、Agent 编排 | project-manager/planner | 串行主控 | SPEC | `DEVELOPMENT_PLAN_V2.md` |
+| 产品规格 | SPEC 维护、范围控制、决策追踪 | product/planner | 串行主控 | 用户输入 | [`SPEC_V2.md`](./SPEC_V2.md) |
+| 开发计划 | 阶段拆解、状态看板、Agent 编排 | project-manager/planner | 串行主控 | SPEC | [`DEVELOPMENT_PLAN_V2.md`](./DEVELOPMENT_PLAN_V2.md) |
 | UI/视觉 | 页面结构、视觉风格、组件方案 | designer/frontend-design | 可并行 | UI 方向/参考样本 | 页面设计方案 |
 | 前端页面 | 首页、生成页、定价页、账户页 | frontend-dev | 可并行 | UI 方向、API 合约 | Next.js 页面和组件 |
 | 后端 API | 生成、积分、历史、账户接口 | backend-dev | 可并行 | 数据库 schema | API Routes |
@@ -136,7 +136,7 @@
 每个功能模块必须按以下流程执行：
 
 1. **需求确认**
-   - 对照 `SPEC_V2.md`。
+   - 对照 [`SPEC_V2.md`](./SPEC_V2.md)。
    - 明确功能范围。
    - 明确不做事项。
    - 明确验收标准。

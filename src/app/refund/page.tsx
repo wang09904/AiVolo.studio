@@ -78,7 +78,7 @@ export default function RefundPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">5. How to Request a Refund</h2>
           <p className="leading-7 text-[oklch(74%_0.018_270)]">
-            Email support@aivolo.studio with the subject “Refund Request” and include your account email, order number if available, and the reason for the request.
+            Email wang19904@gmail.com with the subject “Refund Request” and include your account email, order number if available, and the reason for the request.
           </p>
         </section>
       </article>

@@ -5,7 +5,6 @@ export default function Footer() {
     <footer className="border-t border-[oklch(28%_0.018_270)] bg-[oklch(11%_0.014_270)]">
       <div className="container mx-auto px-4 py-10">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
-          {/* 品牌 */}
           <div>
             <Link href="/" className="text-lg font-bold text-[oklch(96%_0.01_270)]">
               AiVolo.studio
@@ -15,7 +14,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* 产品 */}
           <div>
             <h4 className="font-medium text-[oklch(94%_0.01_270)] mb-3">Product</h4>
             <ul className="space-y-2">
@@ -25,7 +23,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* 资源 */}
           <div>
             <h4 className="font-medium text-[oklch(94%_0.01_270)] mb-3">Available now</h4>
             <ul className="space-y-2">
@@ -35,7 +32,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* 法律 */}
           <div>
             <h4 className="font-medium text-[oklch(94%_0.01_270)] mb-3">Legal</h4>
             <ul className="space-y-2">
@@ -52,7 +48,7 @@ export default function Footer() {
             © 2026 AiVolo.studio. All rights reserved.
           </p>
           <Link href="/contact" className="text-sm text-[oklch(68%_0.018_270)] hover:text-[oklch(96%_0.01_270)] transition-colors">
-            support@aivolo.studio
+            wang19904@gmail.com
           </Link>
         </div>
       </div>

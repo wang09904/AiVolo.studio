@@ -1,6 +1,6 @@
 # AiVolo.studio 产品规格文档 (SPEC)
 
-> Deprecated. This document is superseded by [`SPEC_V2.md`](/Users/wangyong/Documents/项目/AiVolo.studio/SPEC_V2.md).
+> Deprecated. This document is superseded by [`SPEC_V2.md`](../development/SPEC_V2.md).
 > Keep only for historical reference.
 
 > 版本：v2.1

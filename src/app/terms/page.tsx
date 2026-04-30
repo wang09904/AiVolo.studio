@@ -23,7 +23,7 @@ export default function TermsPage() {
           ['6. Service Availability', 'We work to keep the service reliable, but availability may vary due to maintenance, provider limits, network issues, or third-party outages.'],
           ['7. Disclaimers', 'The service is provided as is. We do not guarantee that every output will meet your expectations, be error-free, or be suitable for a specific commercial use.'],
           ['8. Changes to These Terms', 'We may update these terms from time to time. Continued use of the service after changes are posted means you accept the updated terms.'],
-          ['9. Contact', 'Questions about these terms can be sent to support@aivolo.studio.'],
+          ['9. Contact', 'Questions about these terms can be sent to wang19904@gmail.com.'],
         ].map(([title, body]) => (
           <section key={title} className="space-y-3">
             <h2 className="text-xl font-semibold">{title}</h2>

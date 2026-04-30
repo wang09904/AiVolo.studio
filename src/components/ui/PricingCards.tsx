@@ -87,7 +87,7 @@ export default function PricingCards() {
 
               <div className="border-t border-[oklch(29%_0.018_270)] pt-5">
                 <p className="mb-4 text-sm font-semibold text-[oklch(90%_0.012_270)]">
-                  Same benefits on monthly and yearly plans
+                  Plan benefits after subscriptions open
                 </p>
                 <ul className="grid gap-3 text-sm text-[oklch(76%_0.018_270)] sm:grid-cols-2">
                   {PLAN_BENEFITS.map((benefit) => (

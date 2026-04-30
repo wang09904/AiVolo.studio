@@ -1,6 +1,6 @@
 # AiVolo.studio 开发计划
 
-> Deprecated. This document is superseded by [`DEVELOPMENT_PLAN_V2.md`](/Users/wangyong/Documents/项目/AiVolo.studio/DEVELOPMENT_PLAN_V2.md).
+> Deprecated. This document is superseded by [`DEVELOPMENT_PLAN_V2.md`](../development/DEVELOPMENT_PLAN_V2.md).
 > Keep only for historical reference.
 
 > 版本：v1.0（基于 Deep Interview 调研）

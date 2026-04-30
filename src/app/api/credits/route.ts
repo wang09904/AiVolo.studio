@@ -4,24 +4,19 @@ import { ensureUserProfile } from '@/lib/auth/profile'
 
 export const dynamic = 'force-dynamic'
 
-/**
- * 获取当前用户积分余额
- * GET /api/credits
- */
 export async function GET() {
   try {
     const supabase = await createClient()
 
-    // 获取当前会话用户
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) {
-      return NextResponse.json({ error: '未登录' }, { status: 401 })
+      return NextResponse.json({ error: 'Please sign in first.' }, { status: 401 })
     }
 
     const { profile, error: profileError } = await ensureUserProfile(supabase, user)
 
     if (profileError || !profile) {
-      console.error('获取或创建用户资料失败:', profileError)
+      console.error('User profile initialization failed:', profileError)
       return NextResponse.json(
         {
           error: 'Failed to initialize user credits',
@@ -33,7 +28,7 @@ export async function GET() {
 
     return NextResponse.json({ credits: profile.credits_balance ?? 0 })
   } catch (error) {
-    console.error('积分接口错误:', error)
-    return NextResponse.json({ error: '服务器错误' }, { status: 500 })
+    console.error('Credits route failed:', error)
+    return NextResponse.json({ error: 'Server error.' }, { status: 500 })
   }
 }

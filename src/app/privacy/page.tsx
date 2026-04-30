@@ -45,7 +45,7 @@ export default function PrivacyPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">5. Your Rights</h2>
           <p className="leading-7 text-[oklch(74%_0.018_270)]">
-            Depending on your location, you may request access, correction, deletion, portability, or restriction of your personal data. Contact privacy@aivolo.studio to make a request.
+            Depending on your location, you may request access, correction, deletion, portability, or restriction of your personal data. Contact wang19904@gmail.com to make a request.
           </p>
         </section>
 

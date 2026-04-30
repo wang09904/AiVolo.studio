@@ -1,8 +1,8 @@
 # AiVolo.studio 产品规格文档 V2
 
-> 本文档用于替代旧版 `SPEC.md`。  
+> 本文档用于替代旧版 [`SPEC.md`](../archive/SPEC.md)。  
 > 当前版本基于 Deep Interview 原始调研、后续需求澄清和开发执行要求整理。  
-> 产品规格以本文档为准；实时开发状态、Agent 编排和工程质量门禁以 `DEVELOPMENT_PLAN_V2.md` 为准。
+> 产品规格以本文档为准；实时开发状态、Agent 编排和工程质量门禁以 [`DEVELOPMENT_PLAN_V2.md`](./DEVELOPMENT_PLAN_V2.md) 为准。
 
 ---
 
@@ -1196,7 +1196,7 @@ Prompt 标准化得到 final_prompt
 - 所有 Agent 产出必须由主执行 Agent 统一整合和验收。
 - 代码开发必须遵守专业工程流程和质量门禁。
 
-具体 Agent 分工、执行流程、质量门禁和实时任务状态以 `DEVELOPMENT_PLAN_V2.md` 为准。
+具体 Agent 分工、执行流程、质量门禁和实时任务状态以 [`DEVELOPMENT_PLAN_V2.md`](./DEVELOPMENT_PLAN_V2.md) 为准。
 
 ---
 

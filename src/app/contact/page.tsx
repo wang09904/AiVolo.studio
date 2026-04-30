@@ -1,10 +1,4 @@
-'use client';
-
-import { useState } from 'react';
-
 export default function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
-
   return (
     <main className="min-h-screen bg-[oklch(13%_0.016_270)] px-6 py-14 text-[oklch(94%_0.01_270)]">
       <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-[0.8fr_1.2fr]">
@@ -18,8 +12,8 @@ export default function ContactPage() {
           <div className="mt-8 space-y-5 rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-5">
             <div>
               <h2 className="font-semibold">Email</h2>
-              <a href="mailto:support@aivolo.studio" className="mt-1 block text-[oklch(82%_0.08_270)]">
-                support@aivolo.studio
+              <a href="mailto:wang19904@gmail.com" className="mt-1 block text-[oklch(82%_0.08_270)]">
+                wang19904@gmail.com
               </a>
             </div>
             <div>
@@ -30,60 +24,18 @@ export default function ContactPage() {
         </section>
 
         <section className="rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-6">
-          {submitted ? (
-            <div className="grid min-h-80 place-items-center text-center">
-              <div>
-                <h2 className="text-2xl font-semibold">Message ready</h2>
-                <p className="mt-3 text-[oklch(74%_0.018_270)]">
-                  This form is a local preview. Please send your message to support@aivolo.studio.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <form
-              className="space-y-5"
-              onSubmit={(event) => {
-                event.preventDefault();
-                setSubmitted(true);
-              }}
-            >
-              <div>
-                <label htmlFor="name" className="text-sm font-medium">Name</label>
-                <input
-                  id="name"
-                  name="name"
-                  required
-                  className="mt-2 w-full rounded-md border border-[oklch(31%_0.02_270)] bg-[oklch(12%_0.014_270)] px-4 py-3 outline-none focus:border-[oklch(72%_0.18_270)]"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="text-sm font-medium">Email</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  className="mt-2 w-full rounded-md border border-[oklch(31%_0.02_270)] bg-[oklch(12%_0.014_270)] px-4 py-3 outline-none focus:border-[oklch(72%_0.18_270)]"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="text-sm font-medium">Message</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  required
-                  rows={7}
-                  className="mt-2 w-full resize-none rounded-md border border-[oklch(31%_0.02_270)] bg-[oklch(12%_0.014_270)] px-4 py-3 outline-none focus:border-[oklch(72%_0.18_270)]"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full rounded-md bg-[oklch(72%_0.18_270)] px-5 py-3 text-sm font-semibold text-[oklch(16%_0.03_270)]"
-              >
-                Prepare message
-              </button>
-            </form>
-          )}
+          <h2 className="text-2xl font-semibold">What to include</h2>
+          <ul className="mt-5 space-y-3 text-sm leading-6 text-[oklch(74%_0.018_270)]">
+            <li>Account email used with Google login.</li>
+            <li>Order number if your message is about billing or refunds.</li>
+            <li>A short description of the issue or request.</li>
+          </ul>
+          <a
+            href="mailto:wang19904@gmail.com?subject=AiVolo.studio%20Support%20Request"
+            className="mt-8 inline-flex rounded-md bg-[oklch(72%_0.18_270)] px-5 py-3 text-sm font-semibold text-[oklch(16%_0.03_270)]"
+          >
+            Email AiVolo.studio
+          </a>
         </section>
       </div>
     </main>

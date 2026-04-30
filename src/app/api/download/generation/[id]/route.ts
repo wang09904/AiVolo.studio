@@ -74,6 +74,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ error: 'Generated image not found.' }, { status: 404 })
     }
 
+    const hasStoredAsset = Boolean(row.storage_key)
     const downloadUrl = row.storage_key
       ? await getSignedDownloadUrl(row.storage_key)
       : row.image_url
@@ -86,7 +87,14 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
 
     if (!imageResponse.ok) {
       console.error('Generated image fetch failed:', imageResponse.status)
-      return NextResponse.json({ error: 'Generated image download failed.' }, { status: 502 })
+      return NextResponse.json(
+        {
+          error: hasStoredAsset
+            ? 'Generated image download failed.'
+            : 'This generated image link has expired.',
+        },
+        { status: hasStoredAsset ? 502 : 410 }
+      )
     }
 
     const contentType = imageResponse.headers.get('content-type') || 'image/png'

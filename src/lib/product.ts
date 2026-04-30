@@ -6,7 +6,7 @@ export const TEXT_TO_IMAGE_MODEL = {
   openaiApiModelId: 'gpt-image-1.5',
   name: 'GPT Image 2',
   provider: 'OpenAI',
-  creditCost: 3,
+  creditCost: 1,
   costUsd: 0.05,
 };
 

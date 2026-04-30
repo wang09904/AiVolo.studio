@@ -4,9 +4,9 @@
 
 ## 1. 事实源与优先级
 
-- 产品规格以 [SPEC_V2.md](./SPEC_V2.md) 为准。
-- 开发计划以 [DEVELOPMENT_PLAN_V2.md](./DEVELOPMENT_PLAN_V2.md) 为准。
-- [SPEC.md](./SPEC.md) 与 [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) 已废弃，只在用户明确要求时参考。
+- 产品规格以 [docs/development/SPEC_V2.md](./docs/development/SPEC_V2.md) 为准。
+- 开发计划以 [docs/development/DEVELOPMENT_PLAN_V2.md](./docs/development/DEVELOPMENT_PLAN_V2.md) 为准。
+- [docs/archive/SPEC.md](./docs/archive/SPEC.md) 与 [docs/archive/DEVELOPMENT_PLAN.md](./docs/archive/DEVELOPMENT_PLAN.md) 已废弃，只在用户明确要求时参考。
 - 若文档、代码、口头说明冲突，以最新的 `V2` 文档和当前任务要求为准。
 - 不要把未确认的推测写进文档或代码。
 
@@ -83,4 +83,3 @@
 - 任何文档更新都要保证口径一致，不能前后打架。
 - 任何代码交付都要先 review，再修复，再复验。
 - 任务完成的标准是“实现 + 验证 + 记录清楚”，不是“写完代码”。
-

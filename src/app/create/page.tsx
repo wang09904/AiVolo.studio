@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import DownloadImageButton from '@/components/generation/DownloadImageButton';
 import { createClient } from '@/lib/supabase/client';
 import { ASPECT_RATIOS, TEXT_TO_IMAGE_MODEL } from '@/lib/product';
 import type { AspectRatio, TextToImageResponse } from '@/types/generation';
@@ -97,15 +98,6 @@ export default function CreatePage() {
     }
   };
 
-  const handleDownload = (generationId: string) => {
-    const anchor = document.createElement('a');
-    anchor.href = `/api/download/generation/${encodeURIComponent(generationId)}`;
-    anchor.download = `aivolo-${Date.now()}.png`;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-  };
-
   return (
     <main className="min-h-screen bg-[oklch(13%_0.016_270)] px-6 py-12 text-[oklch(96%_0.01_270)] lg:px-10">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[420px_1fr]">
@@ -131,18 +123,19 @@ export default function CreatePage() {
           />
 
           <div className="mt-5">
-            <p className="text-sm font-medium text-[oklch(82%_0.018_270)]">Model</p>
-            <div className="mt-3 rounded-md border border-[oklch(31%_0.02_270)] bg-[oklch(12%_0.014_270)] p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="font-semibold">{TEXT_TO_IMAGE_MODEL.name}</p>
-                  <p className="text-sm text-[oklch(68%_0.018_270)]">{TEXT_TO_IMAGE_MODEL.provider}</p>
-                </div>
-                <span className="rounded-full bg-[oklch(72%_0.18_270)] px-3 py-1 text-xs font-semibold text-[oklch(16%_0.03_270)]">
-                  {TEXT_TO_IMAGE_MODEL.creditCost} credits
-                </span>
-              </div>
-            </div>
+            <label htmlFor="model" className="text-sm font-medium text-[oklch(82%_0.018_270)]">
+              Model
+            </label>
+            <select
+              id="model"
+              defaultValue={TEXT_TO_IMAGE_MODEL.id}
+              disabled={isGenerating}
+              className="mt-3 w-full rounded-md border border-[oklch(31%_0.02_270)] bg-[oklch(12%_0.014_270)] px-4 py-3 text-[oklch(96%_0.01_270)] outline-none transition-colors focus:border-[oklch(72%_0.18_270)] disabled:opacity-70"
+            >
+              <option value={TEXT_TO_IMAGE_MODEL.id}>
+                {TEXT_TO_IMAGE_MODEL.name} · {TEXT_TO_IMAGE_MODEL.provider} · {TEXT_TO_IMAGE_MODEL.creditCost} credit
+              </option>
+            </select>
           </div>
 
           <div className="mt-5">
@@ -214,13 +207,13 @@ export default function CreatePage() {
                 <img src={result.imageUrl} alt="Generated result" className="h-auto w-full" />
               </div>
               <div className="mt-4 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleDownload(result.generationId)}
+                <DownloadImageButton
+                  generationId={result.generationId}
+                  onError={setError}
                   className="rounded-md bg-[oklch(72%_0.18_145)] px-4 py-3 text-sm font-semibold text-[oklch(14%_0.03_145)] transition-colors hover:bg-[oklch(68%_0.18_145)]"
                 >
                   Download image
-                </button>
+                </DownloadImageButton>
                 <button
                   type="button"
                   onClick={() => setResult(null)}
