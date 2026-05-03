@@ -98,7 +98,8 @@ export async function uploadBufferToR2(
  */
 export async function getSignedDownloadUrl(
   key: string,
-  expiresIn = 86400
+  expiresIn = 86400,
+  responseContentDisposition?: string
 ): Promise<string> {
   const client = getR2Client()
   const bucket = getBucketName()
@@ -106,6 +107,7 @@ export async function getSignedDownloadUrl(
   const command = new GetObjectCommand({
     Bucket: bucket,
     Key: key,
+    ResponseContentDisposition: responseContentDisposition,
   })
 
   const signedUrl = await getSignedUrl(client, command, { expiresIn })

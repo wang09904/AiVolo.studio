@@ -88,7 +88,7 @@ export default function CreditBalance({ className = '' }: CreditBalanceProps) {
     return (
       <a
         href="/api/auth/google"
-        className={`px-4 py-2 bg-[oklch(72%_0.18_270)] hover:bg-[oklch(68%_0.18_270)] text-[oklch(16%_0.03_270)] text-sm font-medium rounded-md transition-colors ${className}`}
+        className={`rounded-xl bg-brand-cta px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-105 hover:bg-brand-cta/90 ${className}`}
       >
         Sign in
       </a>
@@ -97,7 +97,7 @@ export default function CreditBalance({ className = '' }: CreditBalanceProps) {
 
   if (isLoading) {
     return (
-      <span className={`px-4 py-2 bg-[oklch(20%_0.018_270)] text-[oklch(66%_0.016_270)] text-sm rounded-md ${className}`}>
+      <span className={`rounded-xl bg-brand-secondary px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-slate-500 ${className}`}>
         Loading...
       </span>
     )
@@ -107,16 +107,16 @@ export default function CreditBalance({ className = '' }: CreditBalanceProps) {
     return (
       <a
         href="/account"
-        className={`px-4 py-2 bg-[oklch(24%_0.03_25)] border border-[oklch(42%_0.08_25)] text-[oklch(82%_0.08_25)] text-sm font-medium rounded-md ${className}`}
+        className={`rounded-xl border-2 border-red-500/20 bg-red-500/10 px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-red-400 ${className}`}
       >
-        Credits unavailable
+        Unavailable
       </a>
     )
   }
 
   return (
-    <span className={`px-4 py-2 bg-[oklch(20%_0.03_270)] border border-[oklch(38%_0.05_270)] text-[oklch(82%_0.08_270)] text-sm font-medium rounded-md ${className}`}>
-      {credits ?? 0} credits
+    <span className={`rounded-xl border-2 border-brand-cta/20 bg-brand-primary px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-white shadow-md ${className}`}>
+      {credits ?? 0} <span className="text-brand-cta">Credits</span>
     </span>
   )
 }

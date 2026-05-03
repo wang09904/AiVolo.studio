@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { E2E_MOCK_IMAGE_BASE64, isE2EMockMode } from '@/lib/e2e/mockGeneration'
 import { createClient } from '@/lib/supabase/server'
 import { getSignedDownloadUrl } from '@/lib/storage/r2'
 
@@ -56,6 +57,22 @@ async function findGenerationForDownload(
 export async function GET(_request: NextRequest, { params }: RouteContext) {
   try {
     const { id } = await params
+    const fileId = id.slice(0, 8)
+    const asInlineAsset = _request.nextUrl.searchParams.get('inline') === '1'
+
+    if (isE2EMockMode()) {
+      const body = Buffer.from(E2E_MOCK_IMAGE_BASE64, 'base64')
+
+      return new NextResponse(body, {
+        headers: {
+          'Content-Type': 'image/png',
+          'Content-Disposition': `attachment; filename="aivolo-${fileId}.png"`,
+          'Content-Length': String(body.byteLength),
+          'Cache-Control': 'private, no-store',
+        },
+      })
+    }
+
     const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
@@ -70,45 +87,29 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ error: 'Download lookup failed.' }, { status: 500 })
     }
 
-    if (!row || row.status !== 'completed') {
+    if (!row) {
       return NextResponse.json({ error: 'Generated image not found.' }, { status: 404 })
     }
 
-    const hasStoredAsset = Boolean(row.storage_key)
-    const downloadUrl = row.storage_key
-      ? await getSignedDownloadUrl(row.storage_key)
-      : row.image_url
-
-    if (!downloadUrl) {
+    if (row.status === 'failed') {
       return NextResponse.json({ error: 'Generated image is unavailable.' }, { status: 404 })
     }
 
-    const imageResponse = await fetch(downloadUrl)
-
-    if (!imageResponse.ok) {
-      console.error('Generated image fetch failed:', imageResponse.status)
-      return NextResponse.json(
-        {
-          error: hasStoredAsset
-            ? 'Generated image download failed.'
-            : 'This generated image link has expired.',
-        },
-        { status: hasStoredAsset ? 502 : 410 }
-      )
+    if (row.status === 'pending') {
+      return NextResponse.json({ error: 'Generated image is not ready yet.' }, { status: 409 })
     }
 
-    const contentType = imageResponse.headers.get('content-type') || 'image/png'
-    const fileExtension = contentType.includes('jpeg') || contentType.includes('jpg') ? 'jpg' : 'png'
-    const body = await imageResponse.arrayBuffer()
+    if (row.storage_key) {
+      const contentDisposition = `${asInlineAsset ? 'inline' : 'attachment'}; filename="aivolo-${fileId}.png"`
+      const signedUrl = await getSignedDownloadUrl(row.storage_key, 86400, contentDisposition)
+      return NextResponse.redirect(signedUrl)
+    }
 
-    return new NextResponse(body, {
-      headers: {
-        'Content-Type': contentType,
-        'Content-Disposition': `attachment; filename="aivolo-${id}.${fileExtension}"`,
-        'Content-Length': String(body.byteLength),
-        'Cache-Control': 'private, no-store',
-      },
-    })
+    if (!row.image_url) {
+      return NextResponse.json({ error: 'Generated image is unavailable.' }, { status: 404 })
+    }
+
+    return NextResponse.redirect(row.image_url)
   } catch (error) {
     console.error('Generation download route failed:', error)
     return NextResponse.json({ error: 'Server error.' }, { status: 500 })

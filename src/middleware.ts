@@ -3,9 +3,15 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const protectedPaths = ['/account']
+const isE2EMockMode = () =>
+  process.env.AIVOLO_E2E_MOCKS === '1' || process.env.NEXT_PUBLIC_AIVOLO_E2E_MOCKS === '1'
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request })
+
+  if (isE2EMockMode()) {
+    return response
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

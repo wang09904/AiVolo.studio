@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import DownloadImageButton from '@/components/generation/DownloadImageButton';
 import { createClient } from '@/lib/supabase/client';
 import { ASPECT_RATIOS, TEXT_TO_IMAGE_MODEL } from '@/lib/product';
+import { isE2EMockMode } from '@/lib/e2e/mockGeneration';
+import { saveRecentGeneration } from '@/lib/generation/recentGenerations';
 import type { AspectRatio, TextToImageResponse } from '@/types/generation';
 
 const DEFAULT_ASPECT: AspectRatio = '1:1';
@@ -32,6 +34,11 @@ export default function CreatePage() {
     if (promptFromUrl) setPrompt(promptFromUrl);
     if (aspectFromUrl && ASPECT_RATIOS.some((ratio) => ratio.value === aspectFromUrl)) {
       setAspectRatio(aspectFromUrl);
+    }
+
+    if (isE2EMockMode()) {
+      setIsLoggedIn(true);
+      return;
     }
 
     const checkAuth = async () => {
@@ -84,10 +91,20 @@ export default function CreatePage() {
       }
 
       if (data.generation) {
-        setResult({
+        const recentGeneration = {
+          id: data.generation.id,
+          prompt: prompt.trim(),
           imageUrl: data.generation.image_url,
-          generationId: data.generation.id,
+          modelId: TEXT_TO_IMAGE_MODEL.id,
+          creditsUsed: TEXT_TO_IMAGE_MODEL.creditCost,
+          createdAt: new Date().toISOString(),
+        };
+
+        setResult({
+          imageUrl: recentGeneration.imageUrl,
+          generationId: recentGeneration.id,
         });
+        saveRecentGeneration(recentGeneration);
         window.dispatchEvent(new Event('aivolo:credits-updated'));
       }
     } catch (err) {
@@ -99,168 +116,170 @@ export default function CreatePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[oklch(13%_0.016_270)] px-6 py-12 text-[oklch(96%_0.01_270)] lg:px-10">
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[420px_1fr]">
-        <section className="rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-5">
-          <div className="mb-6">
-            <p className="text-sm font-semibold text-[oklch(72%_0.18_270)]">Text to image</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-normal">Create a new image</h1>
-            <p className="mt-3 text-sm leading-6 text-[oklch(72%_0.018_270)]">
-              Start with text-to-image generation today. Image-to-image, video, templates, and subscriptions are coming soon.
-            </p>
-          </div>
-
-          <label htmlFor="prompt" className="text-sm font-medium text-[oklch(82%_0.018_270)]">
-            Prompt
-          </label>
-          <textarea
-            id="prompt"
-            value={prompt}
-            onChange={(event) => setPrompt(event.target.value)}
-            placeholder="A cinematic thumbnail of a tiny robot cooking street food in Bangkok..."
-            className="mt-3 h-40 w-full resize-none rounded-md border border-[oklch(31%_0.02_270)] bg-[oklch(12%_0.014_270)] px-4 py-3 text-[oklch(96%_0.01_270)] outline-none transition-colors placeholder:text-[oklch(52%_0.015_270)] focus:border-[oklch(72%_0.18_270)]"
-            disabled={isGenerating}
-          />
-
-          <div className="mt-5">
-            <label htmlFor="model" className="text-sm font-medium text-[oklch(82%_0.018_270)]">
-              Model
-            </label>
-            <select
-              id="model"
-              defaultValue={TEXT_TO_IMAGE_MODEL.id}
-              disabled={isGenerating}
-              className="mt-3 w-full rounded-md border border-[oklch(31%_0.02_270)] bg-[oklch(12%_0.014_270)] px-4 py-3 text-[oklch(96%_0.01_270)] outline-none transition-colors focus:border-[oklch(72%_0.18_270)] disabled:opacity-70"
-            >
-              <option value={TEXT_TO_IMAGE_MODEL.id}>
-                {TEXT_TO_IMAGE_MODEL.name} · {TEXT_TO_IMAGE_MODEL.provider} · {TEXT_TO_IMAGE_MODEL.creditCost} credit
-              </option>
-            </select>
-          </div>
-
-          <div className="mt-5">
-            <p className="text-sm font-medium text-[oklch(82%_0.018_270)]">Aspect ratio</p>
-            <div className="mt-3 grid grid-cols-5 gap-2">
-              {ASPECT_RATIOS.map((ratio) => (
-                <button
-                  key={ratio.value}
-                  type="button"
-                  onClick={() => setAspectRatio(ratio.value)}
-                  disabled={isGenerating}
-                  className={`min-h-16 rounded-md border px-2 text-xs font-semibold transition-colors ${
-                    aspectRatio === ratio.value
-                      ? 'border-[oklch(72%_0.18_270)] bg-[oklch(72%_0.18_270)] text-[oklch(16%_0.03_270)]'
-                      : 'border-[oklch(31%_0.02_270)] bg-[oklch(12%_0.014_270)] text-[oklch(76%_0.018_270)] hover:border-[oklch(50%_0.04_270)]'
-                  }`}
-                >
-                  {ratio.value}
-                </button>
-              ))}
-            </div>
-            <p className="mt-2 text-xs text-[oklch(62%_0.016_270)]">
-              {ASPECT_RATIOS.find((ratio) => ratio.value === aspectRatio)?.description}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleGenerate}
-            disabled={isGenerating || !prompt.trim()}
-            className="mt-6 w-full rounded-md bg-[oklch(72%_0.18_270)] px-5 py-3 text-sm font-semibold text-[oklch(16%_0.03_270)] transition-colors hover:bg-[oklch(68%_0.18_270)] disabled:cursor-not-allowed disabled:bg-[oklch(34%_0.02_270)] disabled:text-[oklch(62%_0.016_270)]"
-          >
-            {isGenerating ? 'Generating...' : `Generate image (${TEXT_TO_IMAGE_MODEL.creditCost} credits)`}
-          </button>
-
-          {error && (
-            <div className="mt-4 rounded-md border border-[oklch(60%_0.16_25_/_0.45)] bg-[oklch(20%_0.04_25)] p-3 text-sm text-[oklch(82%_0.09_25)]">
-              {error}
-            </div>
-          )}
-        </section>
-
-        <section className="min-h-[640px] rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(16%_0.012_270)] p-5">
-          <div className="mb-5 flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-semibold">Result</h2>
-              <p className="mt-1 text-sm text-[oklch(66%_0.016_270)]">
-                Your generated image appears here when the job finishes.
-              </p>
-            </div>
-            {result && (
-              <span className="rounded-full border border-[oklch(31%_0.02_270)] px-3 py-1 text-xs text-[oklch(70%_0.018_270)]">
-                {result.generationId.slice(0, 8)}
-              </span>
-            )}
-          </div>
-
-          {isGenerating ? (
-            <div className="grid min-h-[520px] place-items-center rounded-md border border-[oklch(29%_0.018_270)] bg-[oklch(12%_0.014_270)]">
-              <div className="text-center">
-                <div className="mx-auto h-16 w-16 rounded-full border border-[oklch(72%_0.18_270)] bg-[oklch(20%_0.03_270)]" />
-                <p className="mt-5 font-semibold">Building the image</p>
-                <p className="mt-2 text-sm text-[oklch(66%_0.016_270)]">This can take a short moment.</p>
-              </div>
-            </div>
-          ) : result ? (
-            <div>
-              <div className="overflow-hidden rounded-md border border-[oklch(29%_0.018_270)] bg-[oklch(12%_0.014_270)]">
-                <img src={result.imageUrl} alt="Generated result" className="h-auto w-full" />
-              </div>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <DownloadImageButton
-                  generationId={result.generationId}
-                  onError={setError}
-                  className="rounded-md bg-[oklch(72%_0.18_145)] px-4 py-3 text-sm font-semibold text-[oklch(14%_0.03_145)] transition-colors hover:bg-[oklch(68%_0.18_145)]"
-                >
-                  Download image
-                </DownloadImageButton>
-                <button
-                  type="button"
-                  onClick={() => setResult(null)}
-                  className="rounded-md border border-[oklch(35%_0.02_270)] px-4 py-3 text-sm font-semibold text-[oklch(88%_0.012_270)] transition-colors hover:border-[oklch(72%_0.18_270)]"
-                >
-                  Create another
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="grid min-h-[520px] place-items-center rounded-md border border-dashed border-[oklch(34%_0.02_270)] bg-[oklch(12%_0.014_270)] p-8 text-center">
-              <div>
-                <p className="text-2xl font-semibold text-[oklch(90%_0.012_270)]">No image yet</p>
-                <p className="mt-3 max-w-md text-sm leading-6 text-[oklch(66%_0.016_270)]">
-                  Enter a prompt on the left, then generate. If you are not signed in, Google login opens at that moment.
-                </p>
-              </div>
-            </div>
-          )}
-        </section>
-      </div>
-
-      {showLoginModal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-[oklch(8%_0.012_270_/_0.78)] p-4">
-          <div className="w-full max-w-md rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-6">
-            <h3 className="text-xl font-semibold">Sign in to generate</h3>
-            <p className="mt-3 text-sm leading-6 text-[oklch(72%_0.018_270)]">
-              Browsing and writing prompts stay open to everyone. Generation uses credits, so Google login is required at this step.
-            </p>
-            <div className="mt-6 flex gap-3">
-              <button
-                type="button"
-                onClick={() => setShowLoginModal(false)}
-                className="flex-1 rounded-md border border-[oklch(35%_0.02_270)] px-4 py-3 text-sm font-semibold text-[oklch(88%_0.012_270)]"
-              >
-                Cancel
-              </button>
-              <a
-                href={loginHref}
-                className="flex-1 rounded-md bg-[oklch(72%_0.18_270)] px-4 py-3 text-center text-sm font-semibold text-[oklch(16%_0.03_270)]"
-              >
-                Continue with Google
-              </a>
-            </div>
-          </div>
+    <main className="min-h-[100dvh] bg-brand-bg px-6 py-12 text-brand-text lg:px-12 lg:py-20">
+      <div className="mx-auto max-w-[1600px]">
+        {/* Header Area */}
+        <div className="mb-12 border-b border-brand-border pb-8">
+           <h1 className="text-4xl font-light tracking-tighter md:text-5xl text-brand-text">Generation Workspace</h1>
         </div>
-      )}
+
+        <div className="grid gap-16 lg:grid-cols-[400px_1fr] xl:grid-cols-[480px_1fr]">
+
+          {/* Left Panel: Configuration */}
+          <section className="flex flex-col gap-10">
+            {/* Prompt */}
+            <div className="flex flex-col gap-4">
+              <label htmlFor="prompt" className="text-sm font-medium tracking-wide text-brand-muted">
+                01. Core Directive
+              </label>
+              <textarea
+                data-testid="create-prompt-input"
+                id="prompt"
+                value={prompt}
+                onChange={(event) => setPrompt(event.target.value)}
+                placeholder="A cinematic thumbnail..."
+                className="h-48 w-full resize-none rounded-md border border-brand-border bg-brand-surface/50 px-5 py-5 text-xl font-light leading-relaxed text-brand-text outline-none transition-all placeholder:text-zinc-600 focus:border-brand-cta focus:bg-brand-surface focus:ring-1 focus:ring-brand-cta/50"
+                disabled={isGenerating}
+              />
+            </div>
+
+            {/* Model & Ratio Group */}
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-1">
+              <div className="flex flex-col gap-4">
+                <label htmlFor="model" className="text-sm font-medium tracking-wide text-brand-muted">
+                  02. Model
+                </label>
+                <select
+                  id="model"
+                  defaultValue={TEXT_TO_IMAGE_MODEL.id}
+                  disabled={isGenerating}
+                  className="w-full cursor-pointer appearance-none rounded-md border border-brand-border bg-brand-surface/50 px-4 py-4 text-base font-medium text-brand-text focus:border-brand-cta focus:bg-brand-surface focus:outline-none focus:ring-1 focus:ring-brand-cta/50 transition-all disabled:opacity-50"
+                >
+                  <option value={TEXT_TO_IMAGE_MODEL.id} className="bg-brand-surface">
+                    {TEXT_TO_IMAGE_MODEL.name} ({TEXT_TO_IMAGE_MODEL.creditCost} credits)
+                  </option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <label className="text-sm font-medium tracking-wide text-brand-muted">03. Aspect Ratio</label>
+                <div className="grid grid-cols-5 gap-2">
+                  {ASPECT_RATIOS.map((ratio) => (
+                    <button
+                      data-testid={`aspect-ratio-${ratio.value}`}
+                      key={ratio.value}
+                      type="button"
+                      onClick={() => setAspectRatio(ratio.value)}
+                      disabled={isGenerating}
+                      className={`flex h-14 items-center justify-center rounded-md border text-xs font-medium transition-all duration-300 ${
+                        aspectRatio === ratio.value
+                          ? 'border-brand-text bg-brand-text text-brand-bg shadow-lg'
+                          : 'border-brand-border bg-brand-surface/40 text-brand-muted hover:border-brand-muted hover:text-brand-text hover:bg-brand-surface'
+                      }`}
+                    >
+                      {ratio.value}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <button
+              data-testid="generate-image-button"
+              type="button"
+              onClick={handleGenerate}
+              disabled={isGenerating || !prompt.trim()}
+              className="mt-8 flex w-full items-center justify-between rounded-md bg-brand-cta px-6 py-5 text-sm font-medium text-white transition-all duration-300 ease-out active:scale-[0.98] hover:bg-blue-500 disabled:cursor-not-allowed disabled:bg-brand-surface disabled:text-brand-muted"
+            >
+              <span>{isGenerating ? 'Executing...' : 'Execute Generation'}</span>
+              {!isGenerating && <span>{TEXT_TO_IMAGE_MODEL.creditCost} Credits</span>}
+            </button>
+
+            {error && (
+              <div
+                data-testid="generation-error"
+                className="mt-4 rounded-md border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400"
+              >
+                {error}
+              </div>
+            )}
+          </section>
+
+          {/* Right Panel: Result */}
+          <section className="relative flex min-h-[600px] flex-col overflow-hidden rounded-xl border border-brand-border bg-brand-surface/30 shadow-2xl">
+            {isGenerating ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-bg/50 backdrop-blur-sm">
+                <div className="mb-8 h-px w-32 overflow-hidden bg-brand-border">
+                  <div className="h-full w-full animate-pulse bg-brand-cta"></div>
+                </div>
+                <p className="font-light tracking-widest text-brand-muted uppercase text-xs">Processing sequence</p>
+              </div>
+            ) : result ? (
+              <div data-testid="generation-result" className="flex h-full flex-col">
+                <div className="flex items-center justify-between border-b border-brand-border bg-brand-bg px-6 py-4">
+                  <span className="text-xs font-mono tracking-widest text-brand-muted">ID: {result.generationId.slice(0, 8)}</span>
+                  <div className="flex gap-4">
+                    <button
+                      data-testid="create-another-button"
+                      type="button"
+                      onClick={() => setResult(null)}
+                      className="text-xs font-medium uppercase tracking-widest text-brand-muted transition-colors hover:text-brand-text"
+                    >
+                      Clear
+                    </button>
+                    <DownloadImageButton
+                      generationId={result.generationId}
+                      imageUrl={result.imageUrl}
+                      onError={setError}
+                      className="text-xs font-medium uppercase tracking-widest text-brand-cta transition-colors hover:text-blue-400"
+                    >
+                      Download
+                    </DownloadImageButton>
+                  </div>
+                </div>
+                <div className="flex-grow p-6">
+                  <img data-testid="generated-image" src={result.imageUrl} alt="Generated result" className="h-full w-full object-contain" />
+                </div>
+              </div>
+            ) : (
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
+                 <div className="mb-6 h-px w-16 bg-brand-border"></div>
+                 <p className="text-2xl font-light tracking-tight text-brand-text">Standby</p>
+                 <p className="mt-4 max-w-[40ch] text-sm leading-relaxed text-brand-muted">
+                   Configure parameters on the left and execute to generate an image. Ensure you have sufficient credits.
+                 </p>
+              </div>
+            )}
+          </section>
+        </div>
+
+        {/* Login Modal */}
+        {showLoginModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-bg/90 p-4 backdrop-blur-sm">
+            <div className="w-full max-w-md border border-brand-border bg-brand-bg p-8 shadow-2xl">
+              <h3 className="text-2xl font-light tracking-tight text-brand-text">Authentication Required</h3>
+              <p className="mt-4 text-sm leading-relaxed text-brand-muted">
+                Generation consumes credits. Please sign in to proceed.
+              </p>
+              <div className="mt-10 flex flex-col gap-4">
+                <a
+                  href={loginHref}
+                  className="flex w-full items-center justify-center bg-brand-text px-6 py-4 text-sm font-medium text-brand-bg transition-all duration-300 active:scale-[0.98] hover:bg-white"
+                >
+                  Continue with Google
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setShowLoginModal(false)}
+                  className="flex w-full items-center justify-center border border-brand-border px-6 py-4 text-sm font-medium text-brand-muted transition-all hover:text-brand-text"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </main>
   );
 }

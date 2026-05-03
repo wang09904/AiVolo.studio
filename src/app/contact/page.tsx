@@ -1,40 +1,49 @@
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-[oklch(13%_0.016_270)] px-6 py-14 text-[oklch(94%_0.01_270)]">
-      <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-[0.8fr_1.2fr]">
+    <main className="min-h-screen bg-brand-bg px-6 py-20 text-brand-text">
+      <div className="mx-auto grid max-w-5xl gap-16 md:grid-cols-[0.8fr_1.2fr]">
         <section>
-          <p className="text-sm font-semibold text-[oklch(72%_0.18_270)]">Contact</p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-normal">Talk to AiVolo.studio</h1>
-          <p className="mt-5 leading-7 text-[oklch(74%_0.018_270)]">
-            For support, refunds, privacy requests, or partnership questions, email us and include the Google account email you use with AiVolo.studio.
+          <p className="text-sm font-bold uppercase tracking-widest text-brand-cta">Contact</p>
+          <h1 className="mt-4 font-heading text-5xl font-semibold tracking-tight text-white">Talk to AiVolo<span className="text-brand-cta">.</span>studio</h1>
+          <p className="mt-6 text-lg leading-relaxed text-slate-400">
+            For support, refunds, or partnerships, email us and include your Google account email.
           </p>
 
-          <div className="mt-8 space-y-5 rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-5">
+          <div className="mt-10 space-y-6 rounded-2xl border-2 border-brand-primary bg-brand-primary/50 p-8 shadow-xl">
             <div>
-              <h2 className="font-semibold">Email</h2>
-              <a href="mailto:wang19904@gmail.com" className="mt-1 block text-[oklch(82%_0.08_270)]">
+              <h2 className="font-heading text-xl font-semibold text-white">Email</h2>
+              <a href="mailto:wang19904@gmail.com" className="mt-2 block text-2xl font-bold text-brand-cta hover:underline">
                 wang19904@gmail.com
               </a>
             </div>
-            <div>
-              <h2 className="font-semibold">Response time</h2>
-              <p className="mt-1 text-sm text-[oklch(70%_0.018_270)]">Most messages receive a reply within 1 to 2 business days.</p>
+            <div className="border-t-2 border-brand-secondary pt-6">
+              <h2 className="font-heading text-xl font-semibold text-white">Response Time</h2>
+              <p className="mt-2 text-sm font-medium text-slate-400">Most messages receive a reply within 1 to 2 business days.</p>
             </div>
           </div>
         </section>
 
-        <section className="rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-6">
-          <h2 className="text-2xl font-semibold">What to include</h2>
-          <ul className="mt-5 space-y-3 text-sm leading-6 text-[oklch(74%_0.018_270)]">
-            <li>Account email used with Google login.</li>
-            <li>Order number if your message is about billing or refunds.</li>
-            <li>A short description of the issue or request.</li>
+        <section className="rounded-2xl border-2 border-brand-primary bg-brand-primary p-10 shadow-2xl">
+          <h2 className="font-heading text-3xl font-semibold text-white">What to include</h2>
+          <ul className="mt-8 space-y-4">
+            {[
+              'Account email used with Google login',
+              'Order number for billing or refund requests',
+              'A short description of the issue or request',
+            ].map((item) => (
+              <li key={item} className="flex items-center gap-4 text-lg text-slate-300">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-cta text-xs font-bold text-white">
+                  ✓
+                </span>
+                {item}
+              </li>
+            ))}
           </ul>
           <a
             href="mailto:wang19904@gmail.com?subject=AiVolo.studio%20Support%20Request"
-            className="mt-8 inline-flex rounded-md bg-[oklch(72%_0.18_270)] px-5 py-3 text-sm font-semibold text-[oklch(16%_0.03_270)]"
+            className="mt-12 inline-flex w-full items-center justify-center rounded-xl bg-brand-cta px-8 py-5 text-base font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-105 hover:bg-brand-cta/90"
           >
-            Email AiVolo.studio
+            Email Support
           </a>
         </section>
       </div>

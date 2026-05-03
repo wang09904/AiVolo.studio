@@ -3,23 +3,25 @@ import CreditBalance from '@/components/credits/CreditBalance';
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[oklch(28%_0.018_270)] bg-[oklch(13%_0.016_270_/_0.92)] backdrop-blur">
-      <nav className="container mx-auto px-4 py-4">
+    <header className="sticky top-0 z-50 border-b border-brand-border bg-brand-bg/80 backdrop-blur-xl">
+      <nav className="mx-auto max-w-[1400px] px-6 py-6 lg:px-12">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-[oklch(96%_0.01_270)]">
-            AiVolo.studio
+          <Link href="/" className="text-xl font-medium tracking-tight text-brand-text transition-colors hover:text-brand-cta">
+            AiVolo<span className="text-brand-cta">.</span>studio
           </Link>
-          <div className="flex gap-6 items-center">
-            <Link href="/create" className="text-sm text-[oklch(72%_0.018_270)] transition-colors hover:text-[oklch(96%_0.01_270)]">
+          <div className="flex items-center gap-8">
+            <Link href="/create" className="text-sm font-medium tracking-wide text-brand-muted transition-colors hover:text-brand-text">
               Create
             </Link>
-            <Link href="/pricing" className="text-sm text-[oklch(72%_0.018_270)] transition-colors hover:text-[oklch(96%_0.01_270)]">
+            <Link href="/pricing" className="text-sm font-medium tracking-wide text-brand-muted transition-colors hover:text-brand-text">
               Pricing
             </Link>
-            <Link href="/account" className="text-sm text-[oklch(72%_0.018_270)] transition-colors hover:text-[oklch(96%_0.01_270)]">
+            <Link href="/account" className="text-sm font-medium tracking-wide text-brand-muted transition-colors hover:text-brand-text">
               Account
             </Link>
-            <CreditBalance className="ml-4" />
+            <div className="ml-4 pl-8 border-l border-brand-border h-6 flex items-center">
+              <CreditBalance />
+            </div>
           </div>
         </div>
       </nav>

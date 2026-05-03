@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { ensureUserProfile } from '@/lib/auth/profile';
 import { ASPECT_RATIO_DIMENSIONS, TEXT_TO_IMAGE_MODEL } from '@/lib/product';
+import { E2E_MOCK_IMAGE_DATA_URL, isE2EMockMode } from '@/lib/e2e/mockGeneration';
 import { getSignedDownloadUrl, uploadBufferToR2 } from '@/lib/storage/r2';
 import type { AspectRatio } from '@/types/generation';
 
@@ -25,6 +26,13 @@ type ProviderErrorResponse = {
     type?: string;
     code?: string;
   } | string;
+};
+
+type GenerationPersistenceCheck = {
+  id: string;
+  image_url: string | null;
+  storage_key?: string | null;
+  status: string | null;
 };
 
 const isAspectRatio = (value: unknown): value is AspectRatio =>
@@ -59,6 +67,46 @@ function getProviderMessage(data: ProviderErrorResponse | OpenAIImageResponse): 
   if (typeof data.error === 'string') return data.error;
   if (data.error?.message) return data.error.message;
   return 'message' in data && typeof data.message === 'string' ? data.message : undefined;
+}
+
+async function findVisibleGeneration(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  generationId: string
+): Promise<{ row: GenerationPersistenceCheck | null; error: unknown | null }> {
+  const query = supabase
+    .from('generations')
+    .select('id, image_url, storage_key, status')
+    .eq('id', generationId)
+    .maybeSingle();
+
+  const { data, error } = await query;
+
+  if (!error) {
+    return { row: data as GenerationPersistenceCheck | null, error: null };
+  }
+
+  const message = 'message' in error && typeof error.message === 'string' ? error.message : '';
+
+  if (!message.includes('storage_key')) {
+    return { row: null, error };
+  }
+
+  const fallback = await supabase
+    .from('generations')
+    .select('id, image_url, status')
+    .eq('id', generationId)
+    .maybeSingle();
+
+  if (fallback.error) {
+    return { row: null, error: fallback.error };
+  }
+
+  return {
+    row: fallback.data
+      ? { ...(fallback.data as Omit<GenerationPersistenceCheck, 'storage_key'>), storage_key: null }
+      : null,
+    error: null,
+  };
 }
 
 function extractImageUrl(value: unknown): string | null {
@@ -174,6 +222,17 @@ export async function POST(request: NextRequest) {
         { success: false, error: 'This model is not available yet.' },
         { status: 400 }
       );
+    }
+
+    if (isE2EMockMode()) {
+      return NextResponse.json({
+        success: true,
+        generation: {
+          id: randomUUID(),
+          image_url: E2E_MOCK_IMAGE_DATA_URL,
+          status: 'completed',
+        },
+      });
     }
 
     const supabase = await createClient();
@@ -364,10 +423,70 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const visibleGenerationId = typeof generationId === 'string' ? generationId : pendingGenerationId;
+    let { row: visibleGeneration, error: visibilityError } = await findVisibleGeneration(
+      supabase,
+      visibleGenerationId
+    );
+
+    if (visibilityError) {
+      console.error('Generation persistence check failed:', visibilityError);
+    }
+
+    if (!visibleGeneration) {
+      console.error('Generation was not visible after completion; attempting direct repair insert.', {
+        generationId: visibleGenerationId,
+        userId: user.id,
+      });
+
+      const { error: repairError } = await supabase
+        .from('generations')
+        .insert({
+          id: visibleGenerationId,
+          user_id: user.id,
+          prompt,
+          model_id: TEXT_TO_IMAGE_MODEL.id,
+          generation_type: 'text_to_image',
+          status: 'completed',
+          credits_used: TEXT_TO_IMAGE_MODEL.creditCost,
+          cost_usd: TEXT_TO_IMAGE_MODEL.costUsd,
+          image_url: imageUrl,
+          storage_key: objectKey,
+        });
+
+      if (repairError) {
+        console.error('Generation direct repair insert failed:', repairError);
+        await refundReservedCredits('Generation persistence failed');
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              process.env.NODE_ENV === 'development'
+                ? `Generation persistence failed: ${repairError.message}`
+                : 'Generation persistence failed.',
+          },
+          { status: 500 }
+        );
+      }
+
+      const repairCheck = await findVisibleGeneration(supabase, visibleGenerationId);
+      visibleGeneration = repairCheck.row;
+      visibilityError = repairCheck.error;
+    }
+
+    if (!visibleGeneration) {
+      console.error('Generation persistence still missing after repair:', visibilityError);
+      await refundReservedCredits('Generation persistence verification failed');
+      return NextResponse.json(
+        { success: false, error: 'Generation persistence verification failed.' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
       generation: {
-        id: generationId,
+        id: visibleGeneration.id,
         image_url: imageUrl,
         status: 'completed',
       },

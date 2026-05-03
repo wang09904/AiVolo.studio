@@ -8,8 +8,8 @@ export default function PricingCards() {
 
   return (
     <div className="w-full">
-      <div className="mb-8 flex justify-center">
-        <div className="grid grid-cols-2 rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(16%_0.014_270)] p-1">
+      <div className="mb-16 flex justify-center">
+        <div className="inline-flex rounded-full border border-brand-border bg-brand-bg p-1">
           {([
             { value: 'monthly', label: 'Monthly' },
             { value: 'yearly', label: 'Yearly' },
@@ -18,10 +18,10 @@ export default function PricingCards() {
               key={tab.value}
               type="button"
               onClick={() => setBillingCycle(tab.value)}
-              className={`rounded-md px-6 py-3 text-sm font-semibold transition-colors ${
+              className={`rounded-full px-8 py-2.5 text-sm font-medium transition-all duration-300 ${
                 billingCycle === tab.value
-                  ? 'bg-[oklch(72%_0.18_270)] text-[oklch(16%_0.03_270)]'
-                  : 'text-[oklch(72%_0.018_270)] hover:text-[oklch(96%_0.01_270)]'
+                  ? 'bg-brand-surface text-brand-text'
+                  : 'text-brand-muted hover:text-brand-text'
               }`}
             >
               {tab.label}
@@ -30,7 +30,7 @@ export default function PricingCards() {
         </div>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-8 lg:grid-cols-2">
         {PRICING_PLANS.map((plan) => {
           const isYearly = billingCycle === 'yearly';
           const benefitKey = plan.benefitKey as 'lite' | 'pro';
@@ -38,62 +38,69 @@ export default function PricingCards() {
           return (
             <article
               key={plan.key}
-              className={`rounded-lg border p-6 transition-colors ${
+              className={`relative flex flex-col overflow-hidden border transition-colors duration-500 ${
                 isYearly
-                  ? 'border-[oklch(72%_0.18_270_/_0.7)] bg-[oklch(19%_0.035_270)]'
-                  : 'border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)]'
+                  ? 'border-brand-cta/50 bg-brand-surface/30'
+                  : 'border-brand-border bg-transparent'
               }`}
             >
-              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              {/* Top Accent Line */}
+              {isYearly && <div className="absolute top-0 left-0 right-0 h-1 bg-brand-cta" />}
+
+              <div className="flex flex-col gap-8 p-10 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h3 className="text-3xl font-semibold text-[oklch(98%_0.01_270)]">{plan.plan}</h3>
-                    <span className="rounded-full bg-[oklch(72%_0.18_270)] px-3 py-1 text-xs font-semibold text-[oklch(16%_0.03_270)]">
+                  <div className="flex items-center gap-4">
+                    <h3 className="text-3xl font-light tracking-tight text-brand-text">{plan.plan}</h3>
+                    <span className="rounded-sm border border-brand-cta/30 bg-brand-cta/10 px-3 py-1 text-xs font-medium tracking-wide text-brand-cta">
                       {isYearly ? plan.yearlyBadge : plan.monthlyBadge}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-[oklch(70%_0.018_270)]">
+                  <p className="mt-3 text-sm text-brand-muted">
                     {isYearly ? 'Billed yearly. Monthly equivalent shown.' : 'Billed monthly.'}
                   </p>
                 </div>
 
                 {isYearly ? (
-                  <div className="rounded-md border border-[oklch(72%_0.18_270_/_0.45)] bg-[oklch(15%_0.02_270)] px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <span className="text-sm text-[oklch(67%_0.018_270)] line-through">
+                  <div className="text-right">
+                    <div className="flex items-end justify-end gap-2">
+                      <span className="mb-1 text-sm text-brand-muted line-through decoration-brand-border">
                         {plan.yearlyOriginalPrice}
                       </span>
-                      <span className="text-3xl font-semibold text-[oklch(98%_0.01_270)]">
+                      <span className="text-4xl font-light tracking-tight text-brand-text">
                         {plan.yearlyPrice}
                       </span>
-                      <span className="text-sm text-[oklch(72%_0.018_270)]">/ month</span>
+                      <span className="mb-1 text-sm text-brand-muted">/mo</span>
                     </div>
-                    <p className="mt-1 text-xs font-semibold text-[oklch(82%_0.08_270)]">{plan.yearlySavings}</p>
+                    <p className="mt-1 text-xs font-medium text-brand-cta">{plan.yearlySavings}</p>
                   </div>
                 ) : (
                   <div className="text-right">
-                    <span className="text-4xl font-semibold text-[oklch(98%_0.01_270)]">{plan.monthlyPrice}</span>
-                    <span className="text-sm text-[oklch(72%_0.018_270)]"> / month</span>
+                    <div className="flex items-end justify-end gap-2">
+                      <span className="text-4xl font-light tracking-tight text-brand-text">{plan.monthlyPrice}</span>
+                      <span className="mb-1 text-sm text-brand-muted">/mo</span>
+                    </div>
                   </div>
                 )}
               </div>
 
-              <button
-                disabled
-                className="mb-6 w-full rounded-md border border-[oklch(34%_0.02_270)] bg-[oklch(24%_0.015_270)] px-4 py-3 text-sm font-semibold text-[oklch(66%_0.015_270)]"
-              >
-                Coming Soon
-              </button>
+              <div className="px-10 pb-10">
+                <button
+                  disabled
+                  className="w-full cursor-not-allowed rounded-sm border border-brand-border bg-brand-surface/50 px-6 py-4 text-sm font-medium tracking-wide text-brand-muted transition-colors"
+                >
+                  Coming Soon
+                </button>
+              </div>
 
-              <div className="border-t border-[oklch(29%_0.018_270)] pt-5">
-                <p className="mb-4 text-sm font-semibold text-[oklch(90%_0.012_270)]">
-                  Plan benefits after subscriptions open
+              <div className="mt-auto border-t border-brand-border bg-brand-surface/10 p-10">
+                <p className="mb-6 text-xs font-medium tracking-widest uppercase text-brand-text">
+                  Included Benefits
                 </p>
-                <ul className="grid gap-3 text-sm text-[oklch(76%_0.018_270)] sm:grid-cols-2">
+                <ul className="grid gap-y-4 gap-x-8 text-sm text-brand-muted sm:grid-cols-2">
                   {PLAN_BENEFITS.map((benefit) => (
-                    <li key={benefit.label} className="flex items-start justify-between gap-4">
+                    <li key={benefit.label} className="flex items-center justify-between border-b border-brand-border/50 pb-2">
                       <span>{benefit.label}</span>
-                      <span className="shrink-0 font-semibold text-[oklch(90%_0.012_270)]">
+                      <span className="font-medium text-brand-text">
                         {benefit[benefitKey]}
                       </span>
                     </li>
@@ -105,15 +112,18 @@ export default function PricingCards() {
         })}
       </div>
 
-      <aside className="mt-5 rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(15%_0.014_270)] p-5">
-        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+      <aside className="mt-8 border border-brand-border bg-brand-surface/20 p-8">
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
           <div>
-            <h3 className="text-xl font-semibold text-[oklch(96%_0.01_270)]">Free trial</h3>
-            <p className="mt-1 text-sm text-[oklch(70%_0.018_270)]">
-              Start with 20 credits, standard speed, basic models, 7-day history, and community support.
+            <h3 className="text-xl font-medium tracking-tight text-brand-text">Free Trial</h3>
+            <p className="mt-2 max-w-[60ch] text-sm leading-relaxed text-brand-muted">
+              Start with 20 credits, standard speed, basic models, 7-day history, and community support. No credit card required.
             </p>
           </div>
-          <span className="text-3xl font-semibold text-[oklch(98%_0.01_270)]">$0</span>
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-light tracking-tight text-brand-text">$0</span>
+            <span className="text-sm font-medium text-brand-muted">forever</span>
+          </div>
         </div>
       </aside>
     </div>

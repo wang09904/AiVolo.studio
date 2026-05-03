@@ -7,11 +7,11 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="min-h-screen bg-[oklch(13%_0.016_270)] px-6 py-14 text-[oklch(94%_0.01_270)]">
-      <article className="mx-auto max-w-3xl space-y-8">
-        <header>
-          <h1 className="text-4xl font-semibold tracking-normal">Terms of Service</h1>
-          <p className="mt-3 text-sm text-[oklch(66%_0.016_270)]">Last updated: April 28, 2026</p>
+    <main className="min-h-screen bg-brand-bg px-6 py-20 text-brand-text">
+      <article className="mx-auto max-w-3xl space-y-12">
+        <header className="border-b-2 border-brand-primary pb-8">
+          <h1 className="font-heading text-5xl font-semibold text-white">Terms of Service</h1>
+          <p className="mt-4 text-sm font-bold uppercase tracking-widest text-brand-cta">Last updated: April 28, 2026</p>
         </header>
 
         {[
@@ -25,9 +25,9 @@ export default function TermsPage() {
           ['8. Changes to These Terms', 'We may update these terms from time to time. Continued use of the service after changes are posted means you accept the updated terms.'],
           ['9. Contact', 'Questions about these terms can be sent to wang19904@gmail.com.'],
         ].map(([title, body]) => (
-          <section key={title} className="space-y-3">
-            <h2 className="text-xl font-semibold">{title}</h2>
-            <p className="leading-7 text-[oklch(74%_0.018_270)]">{body}</p>
+          <section key={title} className="space-y-4">
+            <h2 className="font-heading text-2xl font-semibold text-white">{title}</h2>
+            <p className="text-lg leading-relaxed text-slate-400">{body}</p>
           </section>
         ))}
       </article>

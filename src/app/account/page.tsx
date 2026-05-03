@@ -3,7 +3,11 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ensureUserProfile } from '@/lib/auth/profile'
 import CreditHistory from '@/components/credits/CreditHistory'
+import UserAvatar from '@/components/account/UserAvatar'
+import GenerationHistory, { type GenerationHistoryRow } from '@/components/generation/GenerationHistory'
 import SignOutButton from '@/components/auth/SignOutButton'
+import MockAccountPage from '@/components/e2e/MockAccountPage'
+import { isE2EMockMode } from '@/lib/e2e/mockGeneration'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -12,12 +16,56 @@ type GenerationRow = {
   id: string
   prompt: string
   image_url: string | null
+  storage_key?: string | null
   model_id: string
   credits_used: number
   created_at: string
 }
 
+function getSafeAvatarUrl(values: Array<unknown>): string | null {
+  for (const value of values) {
+    if (typeof value !== 'string') continue
+
+    const url = value.trim()
+    if (!url || ['null', 'undefined'].includes(url.toLowerCase())) continue
+    if (url.startsWith('/') || url.startsWith('data:image/') || /^https?:\/\//.test(url)) return url
+  }
+
+  return null
+}
+
+async function getGenerationRows(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
+  const query = (select: string) =>
+    supabase
+      .from('generations')
+      .select(select)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(12)
+
+  const withStorageKey = await query('id, prompt, image_url, storage_key, model_id, credits_used, created_at')
+
+  if (!withStorageKey.error) {
+    return withStorageKey
+  }
+
+  const message =
+    'message' in withStorageKey.error && typeof withStorageKey.error.message === 'string'
+      ? withStorageKey.error.message
+      : ''
+
+  if (!message.includes('storage_key')) {
+    return withStorageKey
+  }
+
+  return query('id, prompt, image_url, model_id, credits_used, created_at')
+}
+
 export default async function AccountPage() {
+  if (isE2EMockMode()) {
+    return <MockAccountPage />
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -27,136 +75,107 @@ export default async function AccountPage() {
 
   const { profile, error: profileError } = await ensureUserProfile(supabase, user)
 
-  const [{ data: generations, error: generationsError }] = await Promise.all([
-    supabase
-      .from('generations')
-      .select('id, prompt, image_url, model_id, credits_used, created_at')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(12),
-  ])
+  const { data: generations, error: generationsError } = await getGenerationRows(supabase, user.id)
 
   const displayName = profile?.name || user.user_metadata?.full_name || user.email || 'Creator'
-  const avatar = profile?.avatar || user.user_metadata?.avatar_url || user.user_metadata?.picture
+  const avatar = getSafeAvatarUrl([profile?.avatar, user.user_metadata?.avatar_url, user.user_metadata?.picture])
   if (generationsError) {
     console.error('Account generation history failed:', generationsError)
   }
 
-  const generationRows = (generations || []) as GenerationRow[]
+  const generationRows = ((generations || []) as unknown as GenerationRow[]).map<GenerationHistoryRow>((generation) => ({
+    id: generation.id,
+    prompt: generation.prompt,
+    imageUrl: generation.image_url || '',
+    storageKey: generation.storage_key || null,
+    modelId: generation.model_id,
+    creditsUsed: generation.credits_used,
+    createdAt: generation.created_at,
+  }))
 
   return (
-    <main className="min-h-screen bg-[oklch(13%_0.016_270)] px-6 py-12 text-[oklch(96%_0.01_270)] lg:px-10">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+    <main className="min-h-[100dvh] bg-brand-bg px-6 py-12 text-brand-text lg:px-12 lg:py-20">
+      <div className="mx-auto max-w-[1400px]">
+
+        {/* Header */}
+        <div className="mb-16 flex flex-col justify-between gap-8 border-b border-brand-border pb-10 md:flex-row md:items-end">
           <div>
-            <p className="text-sm font-semibold text-[oklch(72%_0.18_270)]">Account</p>
-            <h1 className="mt-2 text-4xl font-semibold tracking-normal">Your workspace</h1>
+            <p className="mb-4 text-xs font-medium tracking-widest uppercase text-brand-cta">Account</p>
+            <h1 className="text-4xl font-light tracking-tighter md:text-5xl text-brand-text">Your Workspace</h1>
           </div>
           <SignOutButton
-            className="w-max rounded-md border border-[oklch(35%_0.02_270)] px-4 py-3 text-sm font-semibold text-[oklch(88%_0.012_270)]"
+            className="group flex items-center justify-center border border-brand-border bg-transparent px-6 py-3 text-xs font-medium uppercase tracking-widest text-brand-muted transition-all duration-300 hover:border-brand-text hover:text-brand-text"
           />
         </div>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          <article className="rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-5">
-            <div className="flex items-center gap-4">
-              {avatar ? (
-                <img src={avatar} alt="" className="h-14 w-14 rounded-md object-cover" />
-              ) : (
-                <div className="grid h-14 w-14 place-items-center rounded-md bg-[oklch(72%_0.18_270)] text-xl font-semibold text-[oklch(16%_0.03_270)]">
-                  {displayName.slice(0, 1).toUpperCase()}
-                </div>
-              )}
+        {/* Dashboard Metrics - Strip away heavy cards, use subtle separation */}
+        <section className="grid gap-8 md:grid-cols-3 md:divide-x md:divide-brand-border md:border-b md:border-brand-border md:pb-12">
+
+          <article className="flex flex-col gap-4 md:pr-8">
+            <div className="flex items-center gap-5">
+              <UserAvatar src={avatar} label={displayName} />
               <div className="min-w-0">
-                <h2 className="truncate text-lg font-semibold">{displayName}</h2>
-                <p className="truncate text-sm text-[oklch(68%_0.018_270)]">{profile?.email || user.email}</p>
+                <h2 className="truncate text-lg font-medium text-brand-text">{displayName}</h2>
+                <p className="truncate text-sm text-brand-muted">{profile?.email || user.email}</p>
               </div>
             </div>
           </article>
 
-          <article className="rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-5">
-            <p className="text-sm text-[oklch(68%_0.018_270)]">Credits</p>
-            <p className="mt-3 text-4xl font-semibold">
-              {profileError ? 'Unavailable' : profile?.credits_balance ?? 0}
-            </p>
-            <p className="mt-2 text-sm text-[oklch(68%_0.018_270)]">
-              {profileError ? 'Refresh after your credits finish initializing.' : 'New users start with 20 credits.'}
+          <article className="flex flex-col gap-2 md:px-8">
+            <p className="text-xs font-medium tracking-widest uppercase text-brand-muted">Available Credits</p>
+            <div className="flex items-baseline gap-2">
+              <p className="font-mono text-5xl font-light text-brand-text">
+                {profileError ? '—' : profile?.credits_balance ?? 0}
+              </p>
+              <span className="text-sm font-medium text-brand-cta">CRD</span>
+            </div>
+            <p className="text-xs text-brand-muted">
+              {profileError ? 'Refresh after initialization.' : 'New users start with 20 credits.'}
             </p>
           </article>
 
-          <article className="rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-5">
-            <p className="text-sm text-[oklch(68%_0.018_270)]">Subscription</p>
-            <p className="mt-3 text-2xl font-semibold">Free</p>
-            <p className="mt-2 text-sm text-[oklch(68%_0.018_270)]">Paid subscriptions are coming soon.</p>
+          <article className="flex flex-col gap-2 md:pl-8">
+            <p className="text-xs font-medium tracking-widest uppercase text-brand-muted">Current Plan</p>
+            <p className="text-3xl font-light text-brand-text">Free Trial</p>
+            <p className="text-xs text-brand-muted">Paid subscriptions coming soon.</p>
           </article>
         </section>
 
-        <section className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
-          <div className="rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-5">
-            <div className="mb-5 flex items-center justify-between gap-4">
+        {/* Main Content Area */}
+        <section className="mt-16 grid gap-16 lg:grid-cols-[1fr_400px]">
+
+          {/* History */}
+          <div data-testid="account-generation-history">
+            <div className="mb-10 flex items-end justify-between gap-4 border-b border-brand-border pb-4">
               <div>
-                <h2 className="text-xl font-semibold">Generation history</h2>
-                <p className="mt-1 text-sm text-[oklch(68%_0.018_270)]">Recent text-to-image results.</p>
+                <h2 className="text-2xl font-light tracking-tight text-brand-text">Generation History</h2>
               </div>
               <Link
                 href="/create"
-                className="rounded-md bg-[oklch(72%_0.18_270)] px-4 py-3 text-sm font-semibold text-[oklch(16%_0.03_270)]"
+                className="text-xs font-medium uppercase tracking-widest text-brand-cta transition-colors hover:text-blue-400"
               >
-                Create
+                Create New
               </Link>
             </div>
 
-            {generationRows.length > 0 ? (
-              <div className="grid gap-4 md:grid-cols-2">
-                {generationRows.map((generation) => (
-                  <article
-                    key={generation.id}
-                    className="overflow-hidden rounded-lg border border-[oklch(29%_0.018_270)] bg-[oklch(12%_0.014_270)]"
-                  >
-                    {generation.image_url ? (
-                      <img src={generation.image_url} alt="" className="aspect-video w-full object-cover" />
-                    ) : (
-                      <div className="grid aspect-video place-items-center bg-[oklch(18%_0.014_270)] text-sm text-[oklch(62%_0.016_270)]">
-                        No preview
-                      </div>
-                    )}
-                    <div className="p-4">
-                      <p className="line-clamp-2 text-sm leading-6 text-[oklch(82%_0.018_270)]">
-                        {generation.prompt}
-                      </p>
-                      <div className="mt-4 flex items-center justify-between gap-3 text-xs text-[oklch(62%_0.016_270)]">
-                        <span>{generation.model_id}</span>
-                        <span>{generation.credits_used} credits</span>
-                      </div>
-                      {generation.image_url && (
-                        <a
-                          href={`/api/download/generation/${generation.id}`}
-                          download={`aivolo-${generation.id}.png`}
-                          className="mt-4 block rounded-md border border-[oklch(35%_0.02_270)] px-3 py-2 text-center text-sm font-semibold text-[oklch(88%_0.012_270)]"
-                        >
-                          Download
-                        </a>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : generationsError ? (
-              <div className="rounded-md border border-[oklch(42%_0.08_25)] bg-[oklch(20%_0.04_25)] p-5 text-sm text-[oklch(82%_0.09_25)]">
-                Generation history is unavailable. Please refresh after the database migration is applied.
-              </div>
-            ) : (
-              <div className="rounded-md border border-dashed border-[oklch(34%_0.02_270)] p-10 text-center">
-                <p className="text-lg font-semibold">No generations yet</p>
-                <p className="mt-2 text-sm text-[oklch(68%_0.018_270)]">Create your first image to see it here.</p>
-              </div>
-            )}
+            <GenerationHistory
+              serverRows={generationRows}
+              errorMessage={
+                generationsError
+                  ? 'History unavailable. Please refresh after migrations.'
+                  : null
+              }
+            />
           </div>
 
-          <aside className="rounded-lg border border-[oklch(31%_0.02_270)] bg-[oklch(17%_0.012_270)] p-5">
-            <h2 className="mb-5 text-xl font-semibold">Credit activity</h2>
-            <CreditHistory />
+          {/* Credit Activity */}
+          <aside>
+            <h2 className="mb-10 border-b border-brand-border pb-4 text-2xl font-light tracking-tight text-brand-text">Credit Ledger</h2>
+            <div className="rounded-sm border border-brand-border bg-brand-surface/10 p-6">
+              <CreditHistory />
+            </div>
           </aside>
+
         </section>
       </div>
     </main>

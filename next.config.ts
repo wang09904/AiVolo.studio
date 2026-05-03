@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: "/Users/wangyong/Documents/项目/AiVolo.studio",
+  outputFileTracingRoot: process.cwd(),
   images: {
     remotePatterns: [
       {

@@ -5,9 +5,11 @@ import type { ReactNode } from 'react';
 
 type DownloadImageButtonProps = {
   generationId: string;
+  imageUrl?: string | null;
   className?: string;
   children?: ReactNode;
   fileNamePrefix?: string;
+  testId?: string;
   onError?: (message: string) => void;
 };
 
@@ -18,25 +20,12 @@ function extensionFromContentType(contentType: string | null) {
   return 'png';
 }
 
-async function readDownloadError(response: Response) {
-  try {
-    const data = await response.clone().json();
-    if (typeof data?.error === 'string' && data.error.trim()) return data.error;
-  } catch {
-    // Fall back to a status-based message below.
-  }
-
-  if (response.status === 401) return 'Please sign in first.';
-  if (response.status === 404) return 'Generated image not found.';
-  if (response.status === 410) return 'This generated image link has expired.';
-  return `Download failed with status ${response.status}.`;
-}
-
 export default function DownloadImageButton({
   generationId,
   className,
   children = 'Download',
   fileNamePrefix = 'aivolo',
+  testId = 'download-image-button',
   onError,
 }: DownloadImageButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -47,26 +36,15 @@ export default function DownloadImageButton({
     setLocalError(null);
 
     try {
-      const response = await fetch(`/api/download/generation/${encodeURIComponent(generationId)}`);
-
-      if (!response.ok) {
-        throw new Error(await readDownloadError(response));
-      }
-
-      const blob = await response.blob();
-      if (blob.size === 0) {
-        throw new Error('Downloaded image was empty.');
-      }
-
-      const extension = extensionFromContentType(response.headers.get('content-type'));
-      const objectUrl = URL.createObjectURL(blob);
+      const extension = extensionFromContentType(null);
       const anchor = document.createElement('a');
-      anchor.href = objectUrl;
+      anchor.href = `/api/download/generation/${encodeURIComponent(generationId)}`;
       anchor.download = `${fileNamePrefix}-${generationId.slice(0, 8)}.${extension}`;
+      anchor.rel = 'noopener';
+      anchor.style.display = 'none';
       document.body.appendChild(anchor);
       anchor.click();
       document.body.removeChild(anchor);
-      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Download failed. Please try again.';
       setLocalError(message);
@@ -78,11 +56,17 @@ export default function DownloadImageButton({
 
   return (
     <div>
-      <button type="button" onClick={handleDownload} disabled={isDownloading} className={className}>
+      <button
+        data-testid={testId}
+        type="button"
+        onClick={handleDownload}
+        disabled={isDownloading}
+        className={className}
+      >
         {isDownloading ? 'Preparing download...' : children}
       </button>
       {localError && !onError && (
-        <p className="mt-2 text-sm text-[oklch(76%_0.12_25)]">{localError}</p>
+        <p data-testid="download-error" className="mt-2 text-sm text-[oklch(76%_0.12_25)]">{localError}</p>
       )}
     </div>
   );
