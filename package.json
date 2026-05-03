@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "description": "AI 图片/视频生成工具",
   "scripts": {
+    "guard:agent": "node scripts/agent-production-guard.mjs",
+    "guard:release": "node scripts/agent-production-guard.mjs --release",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "verify:local": "npm run lint && npx tsc --noEmit && npm run build",
+    "verify:full": "npm run lint && npx tsc --noEmit && npm run build && npm run test:e2e",
     "test:e2e": "AIVOLO_E2E_MOCKS=1 NEXT_PUBLIC_AIVOLO_E2E_MOCKS=1 playwright test",
     "test:e2e:ui": "AIVOLO_E2E_MOCKS=1 NEXT_PUBLIC_AIVOLO_E2E_MOCKS=1 playwright test --ui",
     "test:e2e:report": "playwright show-report"

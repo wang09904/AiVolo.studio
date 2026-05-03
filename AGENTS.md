@@ -65,8 +65,21 @@
 - 提交前先检查 `git diff`，确保没有无关文件、密钥、临时产物。
 - 提交信息要准确反映改动内容。
 - 未经用户要求，不要擅自做破坏性 git 操作或重写历史。
+- 必须用中文写commit。
 
-## 9. 项目约束
+## 9. 生产保护与分支制度
+
+- `main` 是生产稳定分支，推送后会影响 `https://aivolo.studio`。
+- 默认不得在 `main` 上做开发性改动；开始代码或文档任务前必须运行 `npm run guard:agent`。
+- 若 guard 阻止当前任务，先从 `main` 创建 `feature/*`、`fix/*` 或 `hotfix/*` 分支，再继续工作。
+- 只有用户明确要求“发布生产”“合并到 main”“线上热修”时，才允许在 `main` 上进行发布相关操作。
+- 开发分支只推送 Preview；Preview 验收通过后，才能合并或推送到 `main`。
+- 推送 `main` 前必须运行 `npm run guard:release`、`npm run verify:full`、`git diff --check`，并再次检查密钥、临时诊断端点、mock 环境变量。
+- 生产环境禁止配置 `AIVOLO_E2E_MOCKS` 和 `NEXT_PUBLIC_AIVOLO_E2E_MOCKS`。
+- Supabase 生产库、R2 生产 bucket、Vercel Production 环境变量均视为生产资源；任何变更必须先说明影响范围并获得用户确认。
+- 具体流程见 [docs/development/PRODUCTION_PROTECTION.md](./docs/development/PRODUCTION_PROTECTION.md)。
+
+## 10. 项目约束
 
 - 第一阶段目标是 7 天内完成最小 MVP 并上线。
 - `21 天` 是整个学习陪跑、开发、运营和验证周期，不是第一阶段开发时长。
@@ -78,17 +91,16 @@
 - 升级订阅采用补差价规则，升级积分与原有积分分批记录。
 - 退款与用户日常积分展示分开设计：用户界面只展示必要信息，后台保留完整审计字段。
 
-## 10. 交付标准
+## 11. 交付标准
 
 - 任何文档更新都要保证口径一致，不能前后打架。
 - 任何代码交付都要先 review，再修复，再复验。
 - 任务完成的标准是“实现 + 验证 + 记录清楚”，不是“写完代码”。
 
-
 <claude-mem-context>
 # Memory Context
 
-# [AiVolo.studio] recent context, 2026-05-03 8:23pm GMT+8
+# [AiVolo.studio] recent context, 2026-05-03 9:38pm GMT+8
 
 Legend: 🎯session 🔴bugfix 🟣feature 🔄refactor ✅change 🔵discovery ⚖️decision 🚨security_alert 🔐security_note
 Format: ID TIME TYPE TITLE
