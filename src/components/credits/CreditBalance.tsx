@@ -115,7 +115,7 @@ export default function CreditBalance({ className = '' }: CreditBalanceProps) {
   }
 
   return (
-    <span className={`rounded-xl border-2 border-brand-cta/20 bg-brand-primary px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-white shadow-md ${className}`}>
+    <span className={`rounded-2xl border-2 border-brand-cta/20 bg-brand-secondary/30 px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-brand-text shadow-sm ${className}`}>
       {credits ?? 0} <span className="text-brand-cta">Credits</span>
     </span>
   )

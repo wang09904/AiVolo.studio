@@ -1,33 +1,33 @@
-# AiVolo.studio Design System: MASTER (High-End Overhaul)
+# AiVolo.studio Design System: MASTER (Playful Creator)
 
 ## Visual Identity
-**Style:** High-End SaaS / Editorial Minimalist
-**Vibe:** Premium, clean, functional, asymmetric.
-**Avoid:** The "Lila Ban" (No purple/blue AI glows). No centered heavy hero sections. No excessive card layouts. No Inter font.
+**Style:** Playful Creator / Consumer Entertainment
+**Vibe:** Lively, human-centric, approachable, creative, low AI-feel.
+**Avoid:** Cold tech aesthetics, dark B2B SaaS dashboards, sharp corners, purely symmetric technical layouts.
 
-## Color Palette (Zinc + Electric Blue)
+## Color Palette (Warm Sand & Violet)
 | Role | Hex | Tailwind Class | Usage |
 |------|-----|----------------|-------|
-| Background | #09090b | `bg-zinc-950` | Primary page background |
-| Surface | #18181b | `bg-zinc-900` | Subtle contrast areas (use sparingly, prefer negative space) |
-| Border | rgba(39,39,42,0.5) | `border-zinc-800/50` | Dividers, structural lines (`divide-y`, `border-t`) |
-| Accent | #2563eb | `bg-blue-600` | Primary actions, Electric Blue. Keep saturation tight. |
-| Text Primary | #f4f4f5 | `text-zinc-100` | Main headings and high-priority text |
-| Text Muted | #a1a1aa | `text-zinc-400` | Body copy, secondary labels |
+| Background | #FAFAF9 | `bg-brand-bg` | Warm sand/cream page background |
+| Surface | #FFFFFF | `bg-brand-surface` | Pure white for cards and floating elements |
+| Border | #E7E5E4 | `border-brand-border` | Extremely subtle structural lines |
+| Accent (CTA) | #7C3AED | `bg-brand-cta` | Vibrant Violet for primary actions and strong highlights |
+| Secondary | #EDE9FE | `bg-brand-secondary` | Soft violet for secondary actions, badges, and active states |
+| Text Primary | #1C1917 | `text-brand-text` | Deep warm stone gray for main text |
+| Text Muted | #78716C | `text-brand-muted` | Soft stone gray for descriptions and placeholders |
 
-## Typography (Deterministic Typography)
-- **Primary Font:** `Outfit` (Sans Serif, Geometric, Premium)
-  - Usage: Global font family for all text.
-- **Headings:** Use tight tracking and tight leading (`tracking-tighter leading-none`).
-- **Body:** Standardize on `text-base text-zinc-400 leading-relaxed max-w-[65ch]`.
+## Typography (Friendly & Expressive)
+- **Primary Font:** `Bricolage Grotesque` (Sans Serif, Expressive, Rounded structure)
+  - Usage: Global font family. Brings a lot of personality without sacrificing readability.
+- **Headings:** Bold, slightly tighter tracking (`tracking-tight font-bold`).
+- **Body:** Generous line height, readable size (`text-base leading-relaxed max-w-[65ch]`).
 
-## Layout Principles (Anti-Center Bias & Data Densification)
-- **Asymmetry:** Default to split-screen (50/50) or left-aligned content with right-aligned assets. Avoid centered blobs.
-- **Viewport:** Use `min-h-[100dvh]` for full-height sections to prevent iOS Safari jumping.
-- **Anti-Card Overuse:** Do not wrap everything in boxes. Use negative space and thin 1px lines (`divide-y`, `border-b border-zinc-800/50`) to separate data points.
-- **Grids:** Prefer CSS Grid over flexbox math.
+## Layout Principles (Bento & Soft Shapes)
+- **Friendly Curves:** Extensive use of large border radii. `rounded-3xl` for main cards, `rounded-2xl` or `rounded-full` for buttons and inputs.
+- **Soft Diffusion (Shadows):** Rely on large, extremely soft shadows (`shadow-[0_8px_30px_rgb(0,0,0,0.04)]`) to create a "floating" feel rather than relying solely on borders.
+- **Overlapping Elements:** Encourage slightly overlapping badges or floating avatars to break the grid and add playfulness.
+- **Bento Grid:** Use asymmetric grid layouts (Bento box style) for feature showcases, but keep the content inside friendly and highly visual.
 
 ## Micro-physics & Interaction
-- **Click State:** All buttons and interactive elements must have tactile feedback: `active:scale-[0.98] transition-all duration-300 ease-out`.
-- **Hover State:** Subtle color shifts. No heavy shadows or glows on hover.
-- **Empty/Loading States:** Must be thoughtfully designed, using skeletal structures matching the final layout.
+- **Bouncy Physics:** Interactions should feel elastic. Use `active:scale-95 transition-transform duration-300 ease-out` for a satisfying "squish" on click.
+- **Focus States:** Bright, colorful focus rings (`focus:ring-brand-cta/40`) to make inputs pop clearly.

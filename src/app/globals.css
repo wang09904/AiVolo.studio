@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #09090b; /* zinc-950 */
-  --foreground: #f4f4f5; /* zinc-100 */
+  --background: #FAFAF9; /* stone-50 */
+  --foreground: #1C1917; /* stone-900 */
 }
 
 body {
@@ -14,10 +14,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle, minimal scrollbar for high-end feel */
+/* Playful, rounded scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -25,10 +25,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(63, 63, 70, 0.5); /* zinc-700/50 */
-  border-radius: 3px;
+  background: #E7E5E4; /* stone-200 */
+  border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(82, 82, 91, 0.8); /* zinc-600/80 */
+  background: #D6D3D1; /* stone-300 */
 }

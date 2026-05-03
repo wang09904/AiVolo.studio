@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-const outfit = Outfit({
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  variable: "--font-bricolage",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "AiVolo.studio",
-  description: "High-end AI image generation for modern creators.",
+  description: "Create AI visuals effortlessly.",
 };
 
 export default function RootLayout({
@@ -21,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable}`}>
-      <body className="font-sans flex flex-col min-h-[100dvh] selection:bg-brand-cta selection:text-white">
+    <html lang="en" className={`${bricolage.variable}`}>
+      <body className="font-sans bg-brand-bg text-brand-text flex flex-col min-h-[100dvh] selection:bg-brand-cta selection:text-white">
         <Header />
         <main className="flex-grow">
           {children}

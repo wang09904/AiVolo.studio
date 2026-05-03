@@ -98,61 +98,61 @@ export default async function AccountPage() {
       <div className="mx-auto max-w-[1400px]">
 
         {/* Header */}
-        <div className="mb-16 flex flex-col justify-between gap-8 border-b border-brand-border pb-10 md:flex-row md:items-end">
+        <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className="mb-4 text-xs font-medium tracking-widest uppercase text-brand-cta">Account</p>
-            <h1 className="text-4xl font-light tracking-tighter md:text-5xl text-brand-text">Your Workspace</h1>
+            <p className="mb-2 text-sm font-bold uppercase tracking-widest text-brand-cta">Account</p>
+            <h1 className="text-4xl font-bold tracking-tight md:text-5xl text-brand-text">Your Workspace</h1>
           </div>
           <SignOutButton
-            className="group flex items-center justify-center border border-brand-border bg-transparent px-6 py-3 text-xs font-medium uppercase tracking-widest text-brand-muted transition-all duration-300 hover:border-brand-text hover:text-brand-text"
+            className="group flex items-center justify-center rounded-2xl border-2 border-brand-border bg-white px-6 py-3 text-sm font-bold text-brand-muted shadow-sm transition-transform duration-300 ease-out active:scale-95 hover:bg-brand-bg hover:text-brand-text"
           />
         </div>
 
-        {/* Dashboard Metrics - Strip away heavy cards, use subtle separation */}
-        <section className="grid gap-8 md:grid-cols-3 md:divide-x md:divide-brand-border md:border-b md:border-brand-border md:pb-12">
+        {/* Dashboard Metrics - Bento Cards */}
+        <section className="grid gap-6 md:grid-cols-3">
 
-          <article className="flex flex-col gap-4 md:pr-8">
+          <article className="flex flex-col gap-4 rounded-3xl border border-brand-border bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="flex items-center gap-5">
               <UserAvatar src={avatar} label={displayName} />
               <div className="min-w-0">
-                <h2 className="truncate text-lg font-medium text-brand-text">{displayName}</h2>
-                <p className="truncate text-sm text-brand-muted">{profile?.email || user.email}</p>
+                <h2 className="truncate text-xl font-bold text-brand-text">{displayName}</h2>
+                <p className="truncate text-sm font-medium text-brand-muted">{profile?.email || user.email}</p>
               </div>
             </div>
           </article>
 
-          <article className="flex flex-col gap-2 md:px-8">
-            <p className="text-xs font-medium tracking-widest uppercase text-brand-muted">Available Credits</p>
-            <div className="flex items-baseline gap-2">
-              <p className="font-mono text-5xl font-light text-brand-text">
+          <article className="flex flex-col gap-2 rounded-3xl border border-brand-border bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <p className="text-sm font-bold uppercase tracking-widest text-brand-cta">Available Credits</p>
+            <div className="mt-2 flex items-baseline gap-2">
+              <p className="text-5xl font-bold tracking-tight text-brand-text">
                 {profileError ? '—' : profile?.credits_balance ?? 0}
               </p>
-              <span className="text-sm font-medium text-brand-cta">CRD</span>
+              <span className="text-lg font-bold text-brand-muted">CRD</span>
             </div>
-            <p className="text-xs text-brand-muted">
+            <p className="mt-2 text-sm font-medium text-brand-muted">
               {profileError ? 'Refresh after initialization.' : 'New users start with 20 credits.'}
             </p>
           </article>
 
-          <article className="flex flex-col gap-2 md:pl-8">
-            <p className="text-xs font-medium tracking-widest uppercase text-brand-muted">Current Plan</p>
-            <p className="text-3xl font-light text-brand-text">Free Trial</p>
-            <p className="text-xs text-brand-muted">Paid subscriptions coming soon.</p>
+          <article className="flex flex-col gap-2 rounded-3xl border border-brand-border bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <p className="text-sm font-bold uppercase tracking-widest text-brand-cta">Current Plan</p>
+            <p className="mt-2 text-4xl font-bold tracking-tight text-brand-text">Free Trial</p>
+            <p className="mt-2 text-sm font-medium text-brand-muted">Paid subscriptions coming soon.</p>
           </article>
         </section>
 
         {/* Main Content Area */}
-        <section className="mt-16 grid gap-16 lg:grid-cols-[1fr_400px]">
+        <section className="mt-12 grid gap-12 lg:grid-cols-[1fr_400px]">
 
           {/* History */}
-          <div data-testid="account-generation-history">
-            <div className="mb-10 flex items-end justify-between gap-4 border-b border-brand-border pb-4">
+          <div data-testid="account-generation-history" className="rounded-3xl border border-brand-border bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] lg:p-10">
+            <div className="mb-8 flex items-center justify-between gap-4 border-b border-brand-border pb-6">
               <div>
-                <h2 className="text-2xl font-light tracking-tight text-brand-text">Generation History</h2>
+                <h2 className="text-3xl font-bold tracking-tight text-brand-text">Generation History</h2>
               </div>
               <Link
                 href="/create"
-                className="text-xs font-medium uppercase tracking-widest text-brand-cta transition-colors hover:text-blue-400"
+                className="rounded-2xl bg-brand-cta px-6 py-3 text-sm font-bold text-white shadow-md transition-transform duration-300 ease-out active:scale-95 hover:bg-brand-cta/90"
               >
                 Create New
               </Link>
@@ -169,9 +169,9 @@ export default async function AccountPage() {
           </div>
 
           {/* Credit Activity */}
-          <aside>
-            <h2 className="mb-10 border-b border-brand-border pb-4 text-2xl font-light tracking-tight text-brand-text">Credit Ledger</h2>
-            <div className="rounded-sm border border-brand-border bg-brand-surface/10 p-6">
+          <aside className="rounded-3xl border border-brand-border bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] lg:p-10">
+            <h2 className="mb-8 border-b border-brand-border pb-6 text-3xl font-bold tracking-tight text-brand-text">Credit Ledger</h2>
+            <div>
               <CreditHistory />
             </div>
           </aside>

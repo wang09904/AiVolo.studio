@@ -116,21 +116,22 @@ export default function CreatePage() {
   };
 
   return (
-    <main className="min-h-[100dvh] bg-brand-bg px-6 py-12 text-brand-text lg:px-12 lg:py-20">
+    <main className="min-h-[100dvh] bg-brand-bg px-6 py-6 text-brand-text lg:px-8 lg:py-8">
       <div className="mx-auto max-w-[1600px]">
         {/* Header Area */}
-        <div className="mb-12 border-b border-brand-border pb-8">
-           <h1 className="text-4xl font-light tracking-tighter md:text-5xl text-brand-text">Generation Workspace</h1>
+        <div className="mb-6 text-center lg:text-left">
+           <h1 className="text-3xl font-bold tracking-tight md:text-4xl text-brand-text">Creation Studio</h1>
+           <p className="mt-1 text-base text-brand-muted">Turn your ideas into visual assets instantly.</p>
         </div>
 
-        <div className="grid gap-16 lg:grid-cols-[400px_1fr] xl:grid-cols-[480px_1fr]">
+        <div className="grid gap-6 lg:grid-cols-[400px_1fr] xl:grid-cols-[460px_1fr]">
 
-          {/* Left Panel: Configuration */}
-          <section className="flex flex-col gap-10">
+          {/* Left Panel: Configuration (Bento Card) */}
+          <section className="flex flex-col gap-5 rounded-[2rem] border border-brand-border bg-white p-6 shadow-[0_4px_20px_rgb(0,0,0,0.04)] lg:p-8">
             {/* Prompt */}
-            <div className="flex flex-col gap-4">
-              <label htmlFor="prompt" className="text-sm font-medium tracking-wide text-brand-muted">
-                01. Core Directive
+            <div className="flex flex-col gap-2">
+              <label htmlFor="prompt" className="text-sm font-bold text-brand-text">
+                What do you want to create?
               </label>
               <textarea
                 data-testid="create-prompt-input"
@@ -138,49 +139,48 @@ export default function CreatePage() {
                 value={prompt}
                 onChange={(event) => setPrompt(event.target.value)}
                 placeholder="A cinematic thumbnail..."
-                className="h-48 w-full resize-none rounded-md border border-brand-border bg-brand-surface/50 px-5 py-5 text-xl font-light leading-relaxed text-brand-text outline-none transition-all placeholder:text-zinc-600 focus:border-brand-cta focus:bg-brand-surface focus:ring-1 focus:ring-brand-cta/50"
+                className="h-28 w-full resize-none rounded-2xl border-2 border-brand-border bg-brand-bg px-4 py-3 text-base font-medium leading-relaxed text-brand-text outline-none transition-all placeholder:text-brand-muted focus:border-brand-cta focus:bg-white focus:ring-4 focus:ring-brand-cta/20"
                 disabled={isGenerating}
               />
             </div>
 
-            {/* Model & Ratio Group */}
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-1">
-              <div className="flex flex-col gap-4">
-                <label htmlFor="model" className="text-sm font-medium tracking-wide text-brand-muted">
-                  02. Model
-                </label>
-                <select
-                  id="model"
-                  defaultValue={TEXT_TO_IMAGE_MODEL.id}
-                  disabled={isGenerating}
-                  className="w-full cursor-pointer appearance-none rounded-md border border-brand-border bg-brand-surface/50 px-4 py-4 text-base font-medium text-brand-text focus:border-brand-cta focus:bg-brand-surface focus:outline-none focus:ring-1 focus:ring-brand-cta/50 transition-all disabled:opacity-50"
-                >
-                  <option value={TEXT_TO_IMAGE_MODEL.id} className="bg-brand-surface">
-                    {TEXT_TO_IMAGE_MODEL.name} ({TEXT_TO_IMAGE_MODEL.creditCost} credits)
-                  </option>
-                </select>
-              </div>
+            {/* Model Selection */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="model" className="text-sm font-bold text-brand-text">
+                Model
+              </label>
+              <select
+                id="model"
+                defaultValue={TEXT_TO_IMAGE_MODEL.id}
+                disabled={isGenerating}
+                className="w-full cursor-pointer appearance-none rounded-xl border-2 border-brand-border bg-brand-bg px-4 py-3 text-sm font-bold text-brand-text focus:border-brand-cta focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand-cta/20 transition-all disabled:opacity-50"
+              >
+                <option value={TEXT_TO_IMAGE_MODEL.id}>
+                  {TEXT_TO_IMAGE_MODEL.name} ({TEXT_TO_IMAGE_MODEL.creditCost} credits)
+                </option>
+              </select>
+            </div>
 
-              <div className="flex flex-col gap-4">
-                <label className="text-sm font-medium tracking-wide text-brand-muted">03. Aspect Ratio</label>
-                <div className="grid grid-cols-5 gap-2">
-                  {ASPECT_RATIOS.map((ratio) => (
-                    <button
-                      data-testid={`aspect-ratio-${ratio.value}`}
-                      key={ratio.value}
-                      type="button"
-                      onClick={() => setAspectRatio(ratio.value)}
-                      disabled={isGenerating}
-                      className={`flex h-14 items-center justify-center rounded-md border text-xs font-medium transition-all duration-300 ${
-                        aspectRatio === ratio.value
-                          ? 'border-brand-text bg-brand-text text-brand-bg shadow-lg'
-                          : 'border-brand-border bg-brand-surface/40 text-brand-muted hover:border-brand-muted hover:text-brand-text hover:bg-brand-surface'
-                      }`}
-                    >
-                      {ratio.value}
-                    </button>
-                  ))}
-                </div>
+            {/* Aspect Ratio */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-brand-text">Aspect Ratio</label>
+              <div className="grid grid-cols-5 gap-1.5">
+                {ASPECT_RATIOS.map((ratio) => (
+                  <button
+                    data-testid={`aspect-ratio-${ratio.value}`}
+                    key={ratio.value}
+                    type="button"
+                    onClick={() => setAspectRatio(ratio.value)}
+                    disabled={isGenerating}
+                    className={`flex h-10 items-center justify-center rounded-xl border-2 text-xs font-bold transition-all duration-300 ease-out active:scale-95 ${
+                      aspectRatio === ratio.value
+                        ? 'border-brand-cta bg-brand-cta text-white shadow-sm'
+                        : 'border-transparent bg-brand-secondary/50 text-brand-cta hover:bg-brand-secondary'
+                    }`}
+                  >
+                    {ratio.value}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -189,41 +189,42 @@ export default function CreatePage() {
               type="button"
               onClick={handleGenerate}
               disabled={isGenerating || !prompt.trim()}
-              className="mt-8 flex w-full items-center justify-between rounded-md bg-brand-cta px-6 py-5 text-sm font-medium text-white transition-all duration-300 ease-out active:scale-[0.98] hover:bg-blue-500 disabled:cursor-not-allowed disabled:bg-brand-surface disabled:text-brand-muted"
+              className="mt-2 flex w-full items-center justify-center rounded-xl bg-brand-text px-5 py-3.5 text-base font-bold text-white transition-transform duration-300 ease-out active:scale-95 hover:bg-brand-text/90 shadow-md disabled:cursor-not-allowed disabled:bg-brand-border disabled:text-brand-muted disabled:shadow-none"
             >
-              <span>{isGenerating ? 'Executing...' : 'Execute Generation'}</span>
-              {!isGenerating && <span>{TEXT_TO_IMAGE_MODEL.creditCost} Credits</span>}
+              <span>{isGenerating ? 'Creating magic...' : `Generate (${TEXT_TO_IMAGE_MODEL.creditCost} Credits)`}</span>
             </button>
 
             {error && (
               <div
                 data-testid="generation-error"
-                className="mt-4 rounded-md border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400"
+                className="mt-1 rounded-xl bg-red-50 p-3 text-xs font-bold text-red-600"
               >
                 {error}
               </div>
             )}
           </section>
 
-          {/* Right Panel: Result */}
-          <section className="relative flex min-h-[600px] flex-col overflow-hidden rounded-xl border border-brand-border bg-brand-surface/30 shadow-2xl">
+          {/* Right Panel: Result (Floating Frame) */}
+          <section className="relative flex min-h-[400px] flex-col overflow-hidden rounded-[2rem] border border-brand-border bg-white shadow-[0_10px_40px_rgb(0,0,0,0.05)]">
             {isGenerating ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-bg/50 backdrop-blur-sm">
-                <div className="mb-8 h-px w-32 overflow-hidden bg-brand-border">
-                  <div className="h-full w-full animate-pulse bg-brand-cta"></div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm z-10">
+                <div className="relative flex h-16 w-16 items-center justify-center">
+                  <div className="absolute h-full w-full animate-ping rounded-full bg-brand-cta/20"></div>
+                  <div className="h-8 w-8 rounded-full bg-brand-cta shadow-[0_0_15px_rgb(124,36,237,0.4)]"></div>
                 </div>
-                <p className="font-light tracking-widest text-brand-muted uppercase text-xs">Processing sequence</p>
+                <p className="mt-6 text-lg font-bold text-brand-text">Working on it...</p>
+                <p className="mt-1 text-sm text-brand-muted font-medium">Sprinkling some AI dust.</p>
               </div>
             ) : result ? (
               <div data-testid="generation-result" className="flex h-full flex-col">
-                <div className="flex items-center justify-between border-b border-brand-border bg-brand-bg px-6 py-4">
-                  <span className="text-xs font-mono tracking-widest text-brand-muted">ID: {result.generationId.slice(0, 8)}</span>
-                  <div className="flex gap-4">
+                <div className="flex items-center justify-between border-b border-brand-border bg-white px-6 py-3">
+                  <span className="rounded-full bg-brand-bg px-3 py-1 text-[10px] font-bold text-brand-muted">ID: {result.generationId.slice(0, 8)}</span>
+                  <div className="flex items-center gap-2">
                     <button
                       data-testid="create-another-button"
                       type="button"
                       onClick={() => setResult(null)}
-                      className="text-xs font-medium uppercase tracking-widest text-brand-muted transition-colors hover:text-brand-text"
+                      className="rounded-full bg-brand-bg px-4 py-2 text-xs font-bold text-brand-text transition-transform duration-300 ease-out active:scale-95 hover:bg-brand-border"
                     >
                       Clear
                     </button>
@@ -231,22 +232,24 @@ export default function CreatePage() {
                       generationId={result.generationId}
                       imageUrl={result.imageUrl}
                       onError={setError}
-                      className="text-xs font-medium uppercase tracking-widest text-brand-cta transition-colors hover:text-blue-400"
+                      className="rounded-full bg-brand-cta px-4 py-2 text-xs font-bold text-white transition-transform duration-300 ease-out active:scale-95 hover:bg-brand-cta/90 shadow-sm"
                     >
                       Download
                     </DownloadImageButton>
                   </div>
                 </div>
-                <div className="flex-grow p-6">
-                  <img data-testid="generated-image" src={result.imageUrl} alt="Generated result" className="h-full w-full object-contain" />
+                <div className="flex-grow bg-brand-bg/50 p-6 flex items-center justify-center">
+                  <div className="overflow-hidden rounded-xl shadow-md">
+                    <img data-testid="generated-image" src={result.imageUrl} alt="Generated result" className="h-auto max-h-[50vh] w-auto object-contain" />
+                  </div>
                 </div>
               </div>
             ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
-                 <div className="mb-6 h-px w-16 bg-brand-border"></div>
-                 <p className="text-2xl font-light tracking-tight text-brand-text">Standby</p>
-                 <p className="mt-4 max-w-[40ch] text-sm leading-relaxed text-brand-muted">
-                   Configure parameters on the left and execute to generate an image. Ensure you have sufficient credits.
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-bg/30 p-8 text-center">
+                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-secondary text-2xl">✨</div>
+                 <p className="text-2xl font-bold text-brand-text">Waiting for your prompt</p>
+                 <p className="mt-2 max-w-[35ch] text-sm text-brand-muted">
+                   Type what you want to see on the left. The more details, the better the result.
                  </p>
               </div>
             )}
@@ -255,23 +258,24 @@ export default function CreatePage() {
 
         {/* Login Modal */}
         {showLoginModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-bg/90 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-md border border-brand-border bg-brand-bg p-8 shadow-2xl">
-              <h3 className="text-2xl font-light tracking-tight text-brand-text">Authentication Required</h3>
-              <p className="mt-4 text-sm leading-relaxed text-brand-muted">
-                Generation consumes credits. Please sign in to proceed.
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-text/20 p-4 backdrop-blur-sm">
+            <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_20px_60px_rgb(0,0,0,0.1)]">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-secondary text-xl">👋</div>
+              <h3 className="text-2xl font-bold text-brand-text">Sign In Required</h3>
+              <p className="mt-2 text-sm text-brand-muted">
+                Creating visuals uses credits. Please sign in to securely manage your balance and history.
               </p>
-              <div className="mt-10 flex flex-col gap-4">
+              <div className="mt-8 flex flex-col gap-3">
                 <a
                   href={loginHref}
-                  className="flex w-full items-center justify-center bg-brand-text px-6 py-4 text-sm font-medium text-brand-bg transition-all duration-300 active:scale-[0.98] hover:bg-white"
+                  className="flex w-full items-center justify-center rounded-xl bg-brand-cta px-5 py-4 text-sm font-bold text-white shadow-md transition-transform duration-300 ease-out active:scale-95 hover:bg-brand-cta/90"
                 >
                   Continue with Google
                 </a>
                 <button
                   type="button"
                   onClick={() => setShowLoginModal(false)}
-                  className="flex w-full items-center justify-center border border-brand-border px-6 py-4 text-sm font-medium text-brand-muted transition-all hover:text-brand-text"
+                  className="flex w-full items-center justify-center rounded-xl bg-brand-bg px-5 py-4 text-sm font-bold text-brand-text transition-transform duration-300 ease-out active:scale-95 hover:bg-brand-border"
                 >
                   Cancel
                 </button>
@@ -281,5 +285,4 @@ export default function CreatePage() {
         )}
       </div>
     </main>
-  );
-}
+  );  }
