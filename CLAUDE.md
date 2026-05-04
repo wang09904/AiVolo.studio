@@ -108,11 +108,11 @@ npm run verify:full    # lint + typecheck + build + E2E
 ## 生产保护与分支制度
 
 - `main` 是生产稳定分支，推送后会影响 `https://aivolo.studio`。
-- 默认不得在 `main` 上做开发性改动；开始代码或文档任务前必须运行 `npm run guard:agent`。
+- 默认不在 `main` 上做常规开发；开始代码或文档任务前运行 `npm run guard:agent`。
 - 若 guard 阻止当前任务，先从 `main` 创建 `feature/*`、`fix/*` 或 `hotfix/*` 分支，再继续工作。
-- 只有用户明确要求“发布生产”“合并到 main”“线上热修”时，才允许在 `main` 上进行发布相关操作。
-- 开发分支只推送 Vercel Preview；Preview 验收通过后，才能合并或推送到 `main`。
-- 推送 `main` 前必须运行 `npm run guard:release`、`npm run verify:full`、`git diff --check`，并再次检查密钥、临时诊断端点、mock 环境变量。
+- 个人开发者默认走轻量 PR 流程：开发分支验证后推送远程，开 PR 合并到 `main`；远程保留 PR required、禁止删除 `main`、禁止 non-fast-forward，审批数保持 `0`。
+- 不要求另一个 reviewer；只有用户明确要求团队式评审时才启用 approval 门槛。
+- 发布前验证按风险分层：文档/规则/文案小改跑 `git diff --check` 并检查密钥、临时诊断端点和生产 mock 配置；普通 UI 或代码改动跑 `npm run verify:local` + `git diff --check`；认证、积分、支付、订阅、退款、生成、下载、数据库、R2、Vercel Production 环境变量等高风险链路跑 `npm run verify:full` + `git diff --check` 并做必要 smoke test。
 - 生产环境禁止配置 `AIVOLO_E2E_MOCKS` 和 `NEXT_PUBLIC_AIVOLO_E2E_MOCKS`。
 - Supabase 生产库、R2 生产 bucket、Vercel Production 环境变量均视为生产资源；任何变更必须先说明影响范围并获得用户确认。
 - 具体流程见 `docs/development/PRODUCTION_PROTECTION.md`。

@@ -29,16 +29,12 @@ if (!branch) {
 }
 
 if (releaseMode) {
-  if (branch !== 'main') {
-    fail(`Release check must run on main. Current branch: ${branch}`);
-  }
-
   if (status) {
     fail('Release check requires a clean worktree. Commit or stash changes first.');
   }
 
-  console.log('OK: release guard passed on clean main.');
-  console.log('Next: run lint, typecheck, build, e2e, then push main for production deploy.');
+  console.log(`OK: release guard passed on clean branch ${branch}.`);
+  console.log('Next: run the risk-appropriate verification, push the current branch, open a PR to main, then merge after Vercel is green.');
   process.exit(0);
 }
 
