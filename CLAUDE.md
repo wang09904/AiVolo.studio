@@ -8,15 +8,38 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **技术栈**：Next.js 15 + React 19 + Tailwind CSS + Supabase + Cloudflare R2
 
+## 项目结构
+
+| 路径 | 用途 |
+| --- | --- |
+| `src/app/` | Next.js App Router 页面与 API routes |
+| `src/components/` | 业务组件与 UI 组件 |
+| `src/lib/` | Supabase、R2、产品配置、服务端工具函数 |
+| `src/hooks/` | React hooks |
+| `src/types/` | TypeScript 类型定义 |
+| `docs/development/` | 当前有效的产品规格、开发计划、上线保护制度 |
+| `docs/archive/` | 已废弃历史文档，只在明确要求时参考 |
+| `docs/research/` | 调研资料 |
+| `references/` | 参考实现与外部样例，不是运行时代码 |
+| `design-system/` | 设计系统资料 |
+| `scripts/` | 本地验证、生产保护和辅助脚本 |
+| `tests/e2e/` | Playwright E2E 测试 |
+| `.env.local` | 本地私密环境变量，不提交 |
+| `.next/`、`node_modules/`、`test-results/`、`playwright-report/` | 生成产物或依赖目录，不手工编辑 |
+
 ---
 
 ## 常用命令
 
 ```bash
+npm run guard:agent    # 开工前检查，默认阻止在 main 上直接开发
+npm run guard:release  # 推送 main 前的发布检查
 npm run dev     # 开发服务器 (localhost:3000)
 npm run build   # 生产构建
 npm run start   # 生产服务器
 npm run lint   # ESLint 检查
+npm run verify:local   # lint + typecheck + build
+npm run verify:full    # lint + typecheck + build + E2E
 ```
 
 **环境配置**：`.env.local` 包含所有必需变量（SUPABASE_URL、OPENAI_API_KEY、R2配置）
@@ -41,7 +64,7 @@ npm run lint   # ESLint 检查
 - 登录触发时机：**点击生成按钮时**才检查登录
 
 ### 积分系统
-- 文生图高级模型每次生成消耗 **3 积分**
+- 第一阶段文生图模型每次生成消耗 **1 积分**，以 `src/lib/product.ts` 为准
 - 通过 `create_generation_pending_atomic` RPC 原子预扣积分并创建 pending 任务（防止超扣）
 - 生成成功后调用 `complete_generation_atomic` 写入结果；生成失败后调用 `fail_generation_refund_atomic` 退还预扣积分
 - `credits_transactions` 表记录流水用于对账
@@ -79,6 +102,20 @@ npm run lint   # ESLint 检查
 - `credits` — 积分余额
 - `credits_transactions` — 积分流水
 - `generations` — 生成任务记录
+
+---
+
+## 生产保护与分支制度
+
+- `main` 是生产稳定分支，推送后会影响 `https://aivolo.studio`。
+- 默认不得在 `main` 上做开发性改动；开始代码或文档任务前必须运行 `npm run guard:agent`。
+- 若 guard 阻止当前任务，先从 `main` 创建 `feature/*`、`fix/*` 或 `hotfix/*` 分支，再继续工作。
+- 只有用户明确要求“发布生产”“合并到 main”“线上热修”时，才允许在 `main` 上进行发布相关操作。
+- 开发分支只推送 Vercel Preview；Preview 验收通过后，才能合并或推送到 `main`。
+- 推送 `main` 前必须运行 `npm run guard:release`、`npm run verify:full`、`git diff --check`，并再次检查密钥、临时诊断端点、mock 环境变量。
+- 生产环境禁止配置 `AIVOLO_E2E_MOCKS` 和 `NEXT_PUBLIC_AIVOLO_E2E_MOCKS`。
+- Supabase 生产库、R2 生产 bucket、Vercel Production 环境变量均视为生产资源；任何变更必须先说明影响范围并获得用户确认。
+- 具体流程见 `docs/development/PRODUCTION_PROTECTION.md`。
 
 ---
 

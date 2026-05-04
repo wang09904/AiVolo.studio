@@ -21,7 +21,7 @@ test('generates an image, downloads it, and shows it in account history', async 
   });
 
   await page.goto('/create');
-  await expect(page.getByRole('heading', { name: 'Generation Workspace' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Creation Studio' })).toBeVisible();
 
   await page.getByTestId('create-prompt-input').fill(prompt);
   await page.getByTestId('generate-image-button').click();

@@ -67,32 +67,32 @@ export default function GenerationHistory({
             <article
               key={generation.id}
               data-testid="history-item"
-              className="group relative flex flex-col border border-brand-border bg-transparent transition-colors hover:border-brand-cta/50"
+              className="group relative flex flex-col overflow-hidden rounded-3xl border border-brand-border bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
             >
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-brand-surface/30">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-brand-bg">
                 {thumbnailUrl ? (
-                  <img src={thumbnailUrl} alt="" className="h-full w-full object-cover opacity-90 transition-all duration-700 group-hover:scale-105 group-hover:opacity-100" />
+                  <img src={thumbnailUrl} alt="" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 ) : (
-                  <div className="grid h-full place-items-center text-xs font-medium uppercase tracking-widest text-brand-muted">
+                  <div className="grid h-full place-items-center text-sm font-bold text-brand-muted">
                     No preview
                   </div>
                 )}
               </div>
               <div className="flex flex-grow flex-col justify-between p-6">
-                <p className="line-clamp-2 text-sm leading-relaxed text-brand-text">
+                <p className="line-clamp-2 text-sm font-medium leading-relaxed text-brand-text">
                   {generation.prompt}
                 </p>
-                <div className="mt-8">
-                  <div className="mb-6 flex items-center justify-between gap-3 text-xs font-medium uppercase tracking-widest text-brand-muted">
-                    <span>{generation.modelId}</span>
-                    <span className="text-brand-cta">{generation.creditsUsed} credits</span>
+                <div className="mt-6">
+                  <div className="mb-4 flex items-center justify-between gap-3 text-xs font-bold text-brand-muted">
+                    <span className="rounded-full bg-brand-bg px-3 py-1 shadow-sm">{generation.modelId}</span>
+                    <span className="rounded-full bg-brand-secondary px-3 py-1 text-brand-cta">{generation.creditsUsed} credits</span>
                   </div>
                   <DownloadImageButton
                     generationId={generation.id}
                     imageUrl={generation.imageUrl}
                     testId="history-download-link"
                     fileNamePrefix="aivolo"
-                    className="flex w-full items-center justify-center border border-brand-border bg-transparent px-4 py-3 text-xs font-medium uppercase tracking-widest text-brand-muted transition-all duration-300 hover:border-brand-text hover:text-brand-text active:scale-[0.98]"
+                    className="flex w-full items-center justify-center rounded-2xl bg-white border-2 border-brand-border px-4 py-3 text-sm font-bold text-brand-text shadow-sm transition-transform duration-300 ease-out active:scale-95 hover:bg-brand-bg"
                   >
                     Download
                   </DownloadImageButton>
@@ -107,17 +107,17 @@ export default function GenerationHistory({
 
   if (errorMessage) {
     return (
-      <div className="border-l-2 border-red-500 bg-red-500/10 p-6 text-sm font-medium text-red-400">
+      <div className="rounded-2xl border-2 border-red-200 bg-red-50 p-6 text-sm font-bold text-red-600">
         {errorMessage}
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-[300px] flex-col items-center justify-center border border-dashed border-brand-border p-12 text-center">
-      <div className="mb-6 h-px w-12 bg-brand-border"></div>
-      <p className="text-2xl font-light tracking-tight text-brand-text">No History</p>
-      <p className="mt-3 text-sm text-brand-muted">Execute your first generation to see it here.</p>
+    <div className="flex min-h-[300px] flex-col items-center justify-center rounded-3xl border-2 border-dashed border-brand-border bg-white p-12 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-brand-secondary text-2xl">🖼️</div>
+      <p className="text-2xl font-bold tracking-tight text-brand-text">No History</p>
+      <p className="mt-2 text-base font-medium text-brand-muted">Execute your first generation to see it here.</p>
     </div>
   );
 }

@@ -11,16 +11,17 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          bg: '#09090b', // zinc-950
-          surface: '#18181b', // zinc-900
-          border: 'rgba(39, 39, 42, 0.5)', // zinc-800/50
-          cta: '#2563eb', // blue-600
-          text: '#f4f4f5', // zinc-100
-          muted: '#a1a1aa', // zinc-400
+          bg: '#FAFAF9', // stone-50
+          surface: '#FFFFFF', // white
+          border: '#E7E5E4', // stone-200
+          cta: '#7C3AED', // violet-600
+          secondary: '#EDE9FE', // violet-100
+          text: '#1C1917', // stone-900
+          muted: '#78716C', // stone-500
         },
       },
       fontFamily: {
-        sans: ['var(--font-outfit)', 'sans-serif'],
+        sans: ['var(--font-bricolage)', 'sans-serif'],
       },
     },
   },
